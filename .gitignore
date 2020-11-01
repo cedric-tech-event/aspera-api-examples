@@ -6,6 +6,9 @@ __pycache__/
 # C extensions
 *.so
 
+# private fikles (secrets)
+private
+
 # Distribution / packaging
 .Python
 build/
