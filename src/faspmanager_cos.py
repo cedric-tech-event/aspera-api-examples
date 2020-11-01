@@ -50,7 +50,6 @@ def node_info(service_credential_file, bucket_region, bucket_name):
     if response.status_code != 200:
         raise Exception("error")
     logging.debug(response.content)
-    # ats_info_root=XmlTree.fromstring(response.content)
     ats_info_root = xml.dom.minidom.parseString(response.content.decode('utf-8'));
     ats_ak = ats_info_root.getElementsByTagName('AccessKey')[0]
     ats_url = ats_info_root.getElementsByTagName('ATSEndpoint')[0].firstChild.nodeValue
