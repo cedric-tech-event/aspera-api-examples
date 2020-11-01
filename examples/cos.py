@@ -36,7 +36,7 @@ response_data = response.json()
 t_spec = response_data['transfer_specs'][0]['transfer_spec']
 
 # add COS specific authorization info
-t_spec.update(node_info['t_spec'])
+t_spec.update(node_info['tspec'])
 logging.debug(t_spec)
 
 # add file list in transfer spec
