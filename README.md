@@ -1,4 +1,4 @@
-# aspera-python
+# Laurent's aspera-python
 
 This small library provides examples to use some IBM Aspera APIs and transfer files for various products:
 
@@ -7,12 +7,17 @@ This small library provides examples to use some IBM Aspera APIs and transfer fi
 * Faspex
 * COS
 
-Nopte that the examples use "FASPManager" to start transfer, but they use the `transfer_spec` structure. The module `faspmanager_help` translates the transfer_spec
-into the FaspManager structure.
+Note that the examples use the older "FASPManager" API to start transfer, but they use the `transfer_spec` structure. The module `faspmanager_help` translates the transfer_spec into the FaspManager structure.
 
-Because they use transfer_spec, the examples can be modified easily to use the newer [Transfer SDK](https://api.ibm.com/explorer/catalog/aspera/product/ibm-aspera/api/transfer-sdk/doc/guides-toc).
+Because they use `transfer_spec`, the examples can be modified easily to use the newer [Transfer SDK](https://api.ibm.com/explorer/catalog/aspera/product/ibm-aspera/api/transfer-sdk/doc/guides-toc).
+
+All IBM Aspera APIs: [https://api.ibm.com/explorer/catalog/aspera/product/ibm-aspera/doc/overview](https://api.ibm.com/explorer/catalog/aspera/product/ibm-aspera/doc/overview)
+
+The shell lines below are using `bash`, if you use another shell, you will know what to do.
 
 # Pepare python
+
+Install packages used by examples:
 
 ```
 $ pip3 install request
@@ -37,7 +42,7 @@ $ find . -type d
 
 # COS service credentials
 
-to test transfers to COS, get your service credentials:
+To test transfers to COS, get your service credentials:
 
 Create the file `private/service_creds.json` , follow:
 [get service credentials](https://www.rubydoc.info/gems/asperalm#ibm-cloud-object-storage)
@@ -71,5 +76,10 @@ The parameter `faspmanager` is set to the folder that contains the `faspmanager`
 $ make
 ```
 
-or simply execute the sample code you want and provide one argument: path to a file to send.
+or simply execute the sample code you want and provide one argument: path to a file to send:
+
+```
+$ truncate --size=1G bigfile.bin
+$ ./examples/node.py bigfile.bin
+```
 
