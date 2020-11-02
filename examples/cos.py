@@ -10,25 +10,33 @@ import sys
 
 # get file to upload from command line
 files_to_upload = sys.argv
-destination_folder="/"
+destination_folder='/'
 
 # get bucket information from config file
-cos_conf=setup.CONFIG['cos']
+config=setup.CONFIG['cos']
 
 # get Aspera Transfer Service Node information for specified COS bucket
-node_info=faspmanager_cos.node_info(cos_conf['service_credential_file'],cos_conf['bucket_region'],cos_conf['bucket_name'])
+node_info=faspmanager_cos.node_info_creds(config['bucket_name'],config['bucket_region'],config['service_credential_file'])
+#node_info=faspmanager_cos.node_info_basic(config['bucket_name'],config['storage_endpoint'],config['api_key'],config['crn'],config['token_endpoint'])
 
 # prepare node API request for upload_setup
-upload_setup_request = {"transfer_requests":[{"transfer_request":{"paths":[{"destination":destination_folder}]}}]}
+upload_setup_request = {'transfer_requests':[{'transfer_request':{'paths':[{'destination':destination_folder}]}}]}
+
+request_headers={
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+request_headers.update(node_info['headers'])
 
 # call Node API with one transfer request to get one transfer spec
 response = requests.post(
-    node_info['url'] + '/files/upload_setup', 
-    data=json.dumps(upload_setup_request), 
-    auth=node_info['auth'], 
-    headers=node_info['headers'])
+    node_info['url'] + '/files/upload_setup',
+    auth=node_info['auth'],
+    data=json.dumps(upload_setup_request),
+    headers=request_headers)
 if response.status_code != 200:
-    raise Exception("error")
+    raise Exception('error')
 
 response_data = response.json()
 
