@@ -1,5 +1,7 @@
 # Laurent's aspera-python
 
+Tested with Python3.
+
 This project provides a small library and examples to use some IBM Aspera APIs and transfer files for various products in python.
 
 The library files in `src`:
@@ -44,12 +46,12 @@ If you dont find your platform, check the
 [IBM Aspera High Speed Transfer Server](https://www.ibm.com/support/fixcentral/swg/selectFixes?product=ibm/Other%20software/IBM%20Aspera%20High-Speed%20Transfer%20Server)
 ( [Release Notes](https://www.ibm.com/support/knowledgecenter/SSL85S_3.9.6/relnote/hsts_relnotes.html) ).
 
-# Pepare python
+# Pepare python 3
 
 Install packages used by examples:
 
 ```
-$ pip3 install request
+$ pip3 install requests
 ```
 
 # Retrieve IBM Aspera FaspManager for python
