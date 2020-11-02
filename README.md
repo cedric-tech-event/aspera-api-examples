@@ -24,6 +24,10 @@ All IBM Aspera APIs: [https://api.ibm.com/explorer/catalog/aspera/product/ibm-as
 
 The shell lines below are using `bash`, if you use another shell, you will know what to do.
 
+Each of the example code is strutured like this:
+
+* `import setup` setup.py is located in the same folder as the example , it reads the configuration file
+
 # Get `ascp` for your platform
 
 You can get the necessary `ascp` and `aspera-license` executable from the TransferSDK or the free [IBM Aspera Desktop Client](https://www.ibm.com/support/fixcentral/swg/selectFixes?product=ibm/Other%20software/IBM%20Aspera%20Desktop%20Client) ( [Release Notes](https://www.ibm.com/support/knowledgecenter/SSXN9J_3.9.6/relnote/desktop_client_relnotes.html) ).
@@ -78,13 +82,15 @@ To test transfers to COS, get your service credentials:
 Create the file `private/service_creds.json` , follow:
 [get service credentials](https://www.rubydoc.info/gems/asperalm#ibm-cloud-object-storage)
 
+If you have only the simùple information, uncomment the commented line and provide only the simplified information.
+
 # Create the configuration file for examples
 
 Create the folder `private`and then the file `private/config.yaml` :
 
 ```
 ---
-  faspmanager: '/home/laurent'
+  faspmanager: /home/laurent
   faspex:
     url: https://faspex.fqdn.or.ip/aspera/faspex
     user: faspex_username
