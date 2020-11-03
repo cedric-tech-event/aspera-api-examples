@@ -45,12 +45,12 @@ t_spec = response_data['transfer_specs'][0]['transfer_spec']
 
 # add COS specific authorization info
 t_spec.update(node_info['tspec'])
-logging.debug(t_spec)
 
 # add file list in transfer spec
 t_spec['paths'] = []
 for f in files_to_upload:
     t_spec['paths'].append({'source':f})
+logging.debug(t_spec)
 
 # start transfer, here we use the FASP Manager, but the newer Transfer SDK can be used as well
 faspmanager_helper.start_transfer_and_wait(t_spec)
