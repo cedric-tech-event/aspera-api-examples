@@ -26,9 +26,9 @@ def node_info_basic(bucket_name, storage_endpoint, api_key, storage_crn, token_e
         'Authorization':bearer_token_info['token_type'] + " " + bearer_token_info['access_token'],
         'Accept':'application/xml'
         }
-    response = requests.get("https://" + storage_endpoint + "/" + bucket_name, headers=header_auth, params={'faspConnectionInfo':True})
+    response = requests.get(storage_endpoint + "/" + bucket_name, headers=header_auth, params={'faspConnectionInfo':True})
     if response.status_code != 200:
-        raise Exception("error")
+        raise Exception("error accessing endpoint")
     logging.debug(response.content)
     ats_info_root = xml.dom.minidom.parseString(response.content.decode('utf-8'));
     ats_ak = ats_info_root.getElementsByTagName('AccessKey')[0]
@@ -74,7 +74,7 @@ def node_info_creds(bucket_name, bucket_region, service_credential_file, token_e
         raise Exception("error")
     
     # 3- get specific endpoint for region
-    storage_endpoint = response.json()['service-endpoints']['regional'][bucket_region]['public'][bucket_region]
+    storage_endpoint = "https://" + response.json()['service-endpoints']['regional'][bucket_region]['public'][bucket_region]
     logging.debug(storage_endpoint)
     
     return node_info_basic(bucket_name, storage_endpoint, service_credentials['apikey'], service_credentials['resource_instance_id'], token_endpoint)
