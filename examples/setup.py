@@ -24,6 +24,7 @@ sys.path.insert(1, os.path.join(main_folder,'src'))
 
 CONFIG = yaml.load(open(os.path.join(main_folder,'private/config.yaml')), Loader=yaml.FullLoader)
 
+# tell where to find faspmanager
 sys.path.insert(1, CONFIG['faspmanager'])
 
 # debug http: see: https://stackoverflow.com/questions/10588644
