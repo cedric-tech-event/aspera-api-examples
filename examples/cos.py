@@ -16,8 +16,8 @@ destination_folder='/'
 config=setup.CONFIG['cos']
 
 # get Aspera Transfer Service Node information for specified COS bucket
-node_info=faspmanager_cos.node_info_creds(config['bucket_name'],config['bucket_region'],config['service_credential_file'])
-#node_info=faspmanager_cos.node_info_basic(config['bucket_name'],config['storage_endpoint'],config['api_key'],config['crn'],config['token_endpoint'])
+#node_info=faspmanager_cos.node_info_creds(config['bucket_name'],config['bucket_region'],config['service_credential_file'])
+node_info=faspmanager_cos.node_info_basic(config['bucket_name'],config['storage_endpoint'],config['api_key'],config['crn'],config['auth_endpoint'])
 
 # prepare node API request for upload_setup
 upload_setup_request = {'transfer_requests':[{'transfer_request':{'paths':[{'destination':destination_folder}]}}]}
