@@ -2,7 +2,12 @@ import sys
 import os
 import yaml
 import logging
-import http.client
+try:
+    # Python 3
+    import http.client as http_client
+except ImportError:
+    # Python 2
+    import httplib as http_client
 
 # set logger for debugging
 logging.basicConfig()
@@ -21,8 +26,8 @@ CONFIG = yaml.load(open(os.path.join(main_folder,'private/config.yaml')), Loader
 
 sys.path.insert(1, CONFIG['faspmanager'])
 
-# debug http
-http.client.HTTPConnection.debuglevel = 1
+# debug http: see: https://stackoverflow.com/questions/10588644
+http_client.HTTPConnection.debuglevel = 1
 
 # set logger for debugging
 requests_log = logging.getLogger("requests.packages.urllib3")
