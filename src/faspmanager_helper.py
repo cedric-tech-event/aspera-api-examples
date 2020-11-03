@@ -124,17 +124,19 @@ def ts_to_order(t_spec):
     ignore_field(t_spec,'lock_rate_policy')
     ignore_field(t_spec,'lock_min_rate')
     ignore_field(t_spec,'fasp_url')
+    ignore_field(t_spec,'min_rate_cap_kbps')
     logging.debug('options args: %s',xfer_opts)
-    if 'http_fallback' in t_spec and t_spec['http_fallback']:
+    if 'http_fallback' in t_spec:
+        if t_spec['http_fallback']:
+            http_fb_opts={}
+            opt_copy(http_fb_opts,'http_port',t_spec,'http_fallback_port')
+            opt_copy(http_fb_opts,'https_key_filename',t_spec,'EX_https_key_filename')
+            opt_copy(http_fb_opts,'https_cert_filename',t_spec,'EX_https_cert_filename')
+            opt_copy(http_fb_opts,'http_proxy_address_host',t_spec,'EX_http_proxy_address_host')
+            opt_copy(http_fb_opts,'http_proxy_address_port',t_spec,'EX_http_proxy_address_port')
+            opt_copy(http_fb_opts,'encode_all_as_jpeg',t_spec,'EX_http_transfer_jpeg')
+            xfer_opts['http_fallback_options']=faspmanager.HttpFallbackOptions(**http_fb_opts)
         ignore_field(t_spec,'http_fallback')
-        http_fb_opts={}
-        opt_copy(http_fb_opts,'http_port',t_spec,'http_fallback_port')
-        opt_copy(http_fb_opts,'https_key_filename',t_spec,'EX_https_key_filename')
-        opt_copy(http_fb_opts,'https_cert_filename',t_spec,'EX_https_cert_filename')
-        opt_copy(http_fb_opts,'http_proxy_address_host',t_spec,'EX_http_proxy_address_host')
-        opt_copy(http_fb_opts,'http_proxy_address_port',t_spec,'EX_http_proxy_address_port')
-        opt_copy(http_fb_opts,'encode_all_as_jpeg',t_spec,'EX_http_transfer_jpeg')
-        xfer_opts['http_fallback_options']=faspmanager.HttpFallbackOptions(**http_fb_opts)
     # no direction, as the call is directly FileUpload or FileDownload
     if t_spec['direction'] == 'send':
         opt_copy(order_args,'dest_user',t_spec,'remote_user')
