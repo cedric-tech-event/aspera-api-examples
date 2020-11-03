@@ -158,6 +158,12 @@ sys.path.insert(1, 'path to src folder')
 sys.path.insert(1, 'path to folder containing faspmanager')
 ```
 
+remove `sys.argv` and replace with your list of files:
+
+```
+files_to_upload=['myfile.bin']
+```
+
 delete the line containing `setup.CONFIG`
 
 replaces parameters `config['param_name']` with actual values
