@@ -12,12 +12,16 @@ import sys
 files_to_upload = sys.argv
 destination_folder='/'
 
-# get bucket information from config file
-config=setup.CONFIG['cos']
+# get Aspera Transfer Service Node information using service credential file
+#config=setup.CONFIG['coscreds']
+#with open(config['service_credential_file']) as f:
+#    credentials = json.load(f)
+#info=faspmanager_cos.from_service_credentials(credentials=credentials,region=config['region'])
+#node_info=faspmanager_cos.node(bucket=config['bucket'],endpoint=info['endpoint'],key=info['key'],crn=info['crn'])
 
 # get Aspera Transfer Service Node information for specified COS bucket
-#node_info=faspmanager_cos.node_info_creds(config['bucket_name'],config['bucket_region'],config['service_credential_file'])
-node_info=faspmanager_cos.node_info_basic(config['bucket_name'],config['storage_endpoint'],config['api_key'],config['crn'],config['auth_endpoint'])
+config=setup.CONFIG['cos']
+node_info=faspmanager_cos.node(bucket=config['bucket'],endpoint=config['endpoint'],key=config['key'],crn=config['crn'],auth=config['auth'])
 
 # prepare node API request for upload_setup
 upload_setup_request = {'transfer_requests':[{'transfer_request':{'paths':[{'destination':destination_folder}]}}]}
