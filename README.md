@@ -62,7 +62,7 @@ A proper HSTS installation with license file works as well.
 Install packages used by examples:
 
 ```
-$ pip3 install requests
+$ pip3 install requests PyYAML
 ```
 
 # Retrieve IBM Aspera FaspManager for python
@@ -100,7 +100,7 @@ Or, it is also possible to use:
 * region
 * service credentials: create the file `private/service_creds.json`, follow: [get service credentials](https://www.rubydoc.info/gems/asperalm#ibm-cloud-object-storage)
 
-For this swap the commented line in `cos.py`.
+For this swap the commented lines in `cos.py`.
 
 # Create the configuration file for examples
 
@@ -118,18 +118,22 @@ Create the folder `private` and then the file `private/config.yaml` :
     user: node_user
     pass: the_password
   cos:
-    service_credential_file: private/service_creds.json
-    bucket_region: eu-de
-    bucket_name: lolo-de
-    storage_endpoint: https://s3.eu-de.cloud-object-storage.appdomain.cloud
-    api_key: Abc1233ffjklqshfkjdlsq
+    bucket: lolo-de
+    endpoint: https://s3.eu-de.cloud-object-storage.appdomain.cloud
+    key: Abc1233ffjklqshfkjdlsq
     crn: 'crn:v1:bluemix:public:cloud-object-storage:global:a/jhfklsddhfsqkldd:iofpqs::'
-    auth_endpoint: https://iam.cloud.ibm.com/identity/token
+    auth: https://iam.cloud.ibm.com/identity/token
+  coscreds:
+    bucket: lolo-de
+    service_credential_file: private/service_creds.json
+    region: eu-de
 ```
 
 The parameter `faspmanager` is set to the folder that contains the `faspmanager` folder from the original IBM Aspera Faspmanager for python.
 
-For COS use either the first 3, or last 5 parameters (and comment/uncomment the appropriate line in `cos.py`)
+For COS use the parameters from section `cos` (default).
+
+Optionally, comment/uncomment the appropriate line in `cos.py` and use section `coscreds`
 
 # Execute examples
 
@@ -137,7 +141,7 @@ For COS use either the first 3, or last 5 parameters (and comment/uncomment the 
 $ make
 ```
 
-or simply execute the sample code you want and provide one argument: path to a file to send:
+Or simply the sample code you want and provide one argument: path to a file to send:
 
 ```
 $ truncate --size=1G bigfile.bin
