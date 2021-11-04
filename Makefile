@@ -9,6 +9,7 @@ all: lib/faspmanager
 	$(SRC)/faspex.py $(TMP)/This_is_a_test.txt
 	$(SRC)/node.py $(TMP)/This_is_a_test.txt
 	$(SRC)/cos.py $(TMP)/This_is_a_test.txt
+	$(SRC)/aoc.py $(TMP)/This_is_a_test.txt
 
 clean:
 	rm -fr $(TMP) $(LIB)

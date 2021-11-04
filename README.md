@@ -63,7 +63,7 @@ A proper HSTS installation with license file works as well.
 Install packages used by examples:
 
 ```
-$ pip3 install requests PyYAML
+$ pip3 install requests PyYAML pyjwt
 ```
 
 # Retrieve Legacy IBM Aspera FaspManager for python
