@@ -18,9 +18,10 @@ The sample code in `src` show how to transfer files using:
 
 # TransferSDK versus FaspManager
 
-Note that the examples use the older "FASPManager" API to start transfer, but they use the `transfer_spec` structure. The module `faspmanager_help` translates the transfer_spec into the FaspManager structure.
-
-Because they use `transfer_spec`, the examples can be modified easily to use the newer [Transfer SDK](https://developer.ibm.com/apis/catalog?search=%22aspera%20transfer%20sdk%22).
+The examples use the older "FASPManager" API to start transfer.
+Nevertheless, they use the `transfer_spec` structure.
+The module `faspmanager_help` translates the transfer_spec into the Legacy FaspManager structure.
+Thanks to this, the examples can be modified easily to use the newer [Transfer SDK](https://developer.ibm.com/apis/catalog?search=%22aspera%20transfer%20sdk%22).
 
 All IBM Aspera APIs: [https://developer.ibm.com/apis/catalog/?search=aspera](https://developer.ibm.com/apis/catalog/?search=aspera)
 
@@ -32,11 +33,11 @@ Each of the example code is strutured like this:
 	* it reads the configuration file
 	* setup debug logging
 	* `import helper_aspera_faspmanager` located in `src` this translates transfer_spec into FaspManager structure.
-* get secrets from test_environment.CONFIG
+* get configuration, urls, username, credentials, secrets, from test_environment.CONFIG
 
 # Get `ascp` for your platform
 
-You can get the necessary `ascp` and `aspera-license` executable from the TransferSDK or the free [IBM Aspera Desktop Client](https://www.ibm.com/support/fixcentral/swg/selectFixes?product=ibm/Other%20software/IBM%20Aspera%20Desktop%20Client) ( [Release Notes](https://www.ibm.com/support/knowledgecenter/SSXN9J_3.9.6/relnote/desktop_client_relnotes.html) ).
+You can get the necessary `ascp` and `aspera-license` executable from the [Transfer SDK](https://developer.ibm.com/apis/catalog?search=%22aspera%20transfer%20sdk%22) or the free [IBM Aspera Desktop Client](https://www.ibm.com/support/fixcentral/swg/selectFixes?product=ibm/Other%20software/IBM%20Aspera%20Desktop%20Client) ( [Release Notes](https://www.ibm.com/support/knowledgecenter/SSXN9J_3.9.6/relnote/desktop_client_relnotes.html) ).
 
 As of version 3.9.6.1, the following platforms are supported:
 
@@ -52,12 +53,6 @@ As of version 3.9.6.1, the following platforms are supported:
 
 From the installed software extract `ascp` and `aspera-license`.
 
-If you dont find your platform, check the
-[IBM Aspera High Speed Transfer Server](https://www.ibm.com/support/fixcentral/swg/selectFixes?product=ibm/Other%20software/IBM%20Aspera%20High-Speed%20Transfer%20Server)
-( [Release Notes](https://www.ibm.com/support/knowledgecenter/SSL85S_3.9.6/relnote/hsts_relnotes.html) ).
-
-A proper HSTS installation with license file works as well.
-
 # Pepare python 3
 
 Install packages used by examples:
@@ -68,8 +63,10 @@ $ pip3 install requests PyYAML pyjwt
 
 # Retrieve Legacy IBM Aspera FaspManager for python
 
-Get the FaspManager package for python:
-[IBM Aspera FASPManager for python](https://api.ibm.com/explorer/catalog/aspera/product/ibm-aspera/api/fasp-manager-sdk/doc/guide)
+Execute the makefile: `make` : it will retrieve the SDK.
+
+Or get the FaspManager package for python:
+[IBM Aspera FASPManager for python](https://developer.ibm.com/apis/catalog/aspera--fasp-manager-sdk/Introduction)
 
 ```
 $ mkdir lib
@@ -103,35 +100,9 @@ Or, it is also possible to use:
 
 For this swap the commented lines in `cos.py`.
 
-# Create the configuration file for examples
+# Create the configuration file with your credentials
 
-Create the folder `private` and then the file `private/config.yaml` :
-
-```
----
-  faspex:
-    url: https://faspex.fqdn.or.ip/aspera/faspex
-    user: faspex_username
-    pass: the_password
-  node:
-    url: https://hsts.fqdn.or.ip:9092
-    user: node_user
-    pass: the_password
-  cos:
-    bucket: lolo-de
-    endpoint: https://s3.eu-de.cloud-object-storage.appdomain.cloud
-    key: Abc1233ffjklqshfkjdlsq
-    crn: 'crn:v1:bluemix:public:cloud-object-storage:global:a/jhfklsddhfsqkldd:iofpqs::'
-    auth: https://iam.cloud.ibm.com/identity/token
-  coscreds:
-    bucket: lolo-de
-    service_credential_file: private/service_creds.json
-    region: eu-de
-```
-
-For COS use the parameters from section `cos` (default).
-
-Optionally, comment/uncomment the appropriate line in `cos.py` and use section `coscreds`
+Copy the file `config.tmpl` into `config.yaml` and fill.
 
 # Execute examples
 
@@ -146,31 +117,6 @@ $ truncate --size=1G bigfile.bin
 $ ./src/node.py bigfile.bin
 ```
 
-# Modify examples
+# Start your own app
 
-Start by copying one of the example.
-
-Remove the line `import test_environment`
-
-add lines at the beginning to tell where libs are:
-
-```
-import sys
-sys.path.insert(1, 'path to src folder')
-sys.path.insert(1, 'path to folder containing faspmanager')
-```
-
-remove `sys.argv` and replace with your list of files:
-
-```
-files_to_upload=['myfile.bin']
-```
-
-delete the line containing `test_environment.CONFIG`
-
-replaces parameters `config['param_name']` with actual values
-
-That's it you have a standlone script.
-
-Happy transfers with IBM Aspera !
-
+Copy and modify one of the examples.
