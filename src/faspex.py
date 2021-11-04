@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import setup
+import test_environment
 import faspmanager
-import faspmanager_helper
+import helper_aspera_faspmanager
 import requests
 import requests.auth
 import logging
@@ -26,8 +26,8 @@ delivery_info = {
 
 # create package and get information for file upload
 response = requests.post(
-    setup.CONFIG['faspex']['url'] + '/send',
-    auth=requests.auth.HTTPBasicAuth(setup.CONFIG['faspex']['user'], setup.CONFIG['faspex']['pass']),
+    test_environment.CONFIG['faspex']['url'] + '/send',
+    auth=requests.auth.HTTPBasicAuth(test_environment.CONFIG['faspex']['user'], test_environment.CONFIG['faspex']['pass']),
     data=json.dumps(delivery_info),
     headers={
         "Content-Type": "application/json",
@@ -50,4 +50,4 @@ for f in package_files:
     t_spec['paths'].append({'source':f})
 
 # send files into package
-faspmanager_helper.start_transfer_and_wait(t_spec)
+helper_aspera_faspmanager.start_transfer_and_wait(t_spec)

@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # laurent.martin.aspera@fr.ibm.com
-
-import setup
-import faspmanager
-import faspmanager_helper
+import test_environment
+import os
+import sys
 import logging
 
 # Example 1: download
@@ -16,12 +15,14 @@ t_spec_download = {
     "remote_password":"demoaspera",
     "ssh_port":33001,
     "direction":"receive",
-    "destination_root":".",
+    "destination_root":test_environment.tmp_folder,
     "paths":[
         {"source":"/aspera-test-dir-tiny/200KB.1"}
     ]
 }
-faspmanager_helper.start_transfer_and_wait(t_spec_download)
+test_environment.start_transfer_and_wait(t_spec_download)
+
+local_file = os.path.join(test_environment.tmp_folder, "200KB.1")
 
 # Example 2: upload: single file upload to existing folder.
 logging.debug("======Test upload 1")
@@ -32,13 +33,13 @@ t_spec_upload = {
     "ssh_port":33001,
     "direction":"send",
     "destination_root":"/Upload",
-    #"create_dir":True, # destination root is folder, else it assumes (one source) it is dest file name
+    # "create_dir":True, # destination root is folder, else it assumes (one source) it is dest file name
     "paths":[
-        {"source":"200KB.1"}
+        {"source":local_file}
     ],
     "tags":{"mysample_tag":"hello"}
 }
-faspmanager_helper.start_transfer_and_wait(t_spec_upload)
+test_environment.start_transfer_and_wait(t_spec_upload)
 # check file is uploaded by connecting to: http://demo.asperasoft.com/aspera/user/ with same creds
 
 # Example 3: upload: single file upload to non-existing folder
@@ -46,16 +47,16 @@ faspmanager_helper.start_transfer_and_wait(t_spec_upload)
 # but if destination is a folder, it will send same source filename into folder
 # so enforce folder creation, to be sure of what happens
 logging.debug("======Test upload 2")
-t_spec_upload['destination_root']='/Upload/new_folder'
-t_spec_upload['create_dir']=True
-faspmanager_helper.start_transfer_and_wait(t_spec_upload)
+t_spec_upload['destination_root'] = '/Upload/new_folder'
+t_spec_upload['create_dir'] = True
+test_environment.start_transfer_and_wait(t_spec_upload)
 
 # Example 4: upload: send to sub folder, but using file pairs
 logging.debug("======Test upload 3")
-t_spec_upload['destination_root']='/Upload'
+t_spec_upload['destination_root'] = '/Upload'
 del t_spec_upload['create_dir']
-t_spec_upload['paths']=[
-        {"source":"200KB.1","destination":"xxx/newfilename.ext"}
+t_spec_upload['paths'] = [
+        {"source":local_file, "destination":"xxx/newfilename.ext"}
     ]
-faspmanager_helper.start_transfer_and_wait(t_spec_upload)
+test_environment.start_transfer_and_wait(t_spec_upload)
 

@@ -10,7 +10,7 @@ def node(*,bucket, endpoint, key, crn, auth=IBM_CLOUD_OAUTH_URL):
     """Return Aspera Transfer Service node information for given bucket
     Parameters
     bucket      Name of bucket
-    endpoint    Storage endpoint
+    endpoint    Storage endpoint ("https://...")
     key         API Key
     crn         Resource instance id
     auth        Token endpoint

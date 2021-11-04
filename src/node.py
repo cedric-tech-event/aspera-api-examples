@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import setup
+import test_environment
 import faspmanager
-import faspmanager_helper
+import helper_aspera_faspmanager
 import requests
 import logging
 import requests.auth
@@ -13,7 +13,7 @@ files_to_upload = sys.argv
 destination_folder='/Upload'
 
 # get node information from config file
-config=setup.CONFIG['node']
+config=test_environment.CONFIG['node']
 
 # prepare node API request for upload_setup
 upload_setup_request = {'transfer_requests':[{'transfer_request':{'paths':[{'destination':destination_folder}]}}]}
@@ -45,4 +45,4 @@ for f in files_to_upload:
 logging.debug(t_spec)
 
 # start transfer, here we use the FASP Manager, but the newer Transfer SDK can be used as well
-faspmanager_helper.start_transfer_and_wait(t_spec)
+helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
