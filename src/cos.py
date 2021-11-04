@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
+# laurent.martin.aspera@fr.ibm.com
 import test_environment
-import faspmanager
-import helper_aspera_faspmanager
 import helper_aspera_cos
 import requests
 import logging
@@ -57,4 +56,4 @@ for f in files_to_upload:
 logging.debug(t_spec)
 
 # start transfer, here we use the FASP Manager, but the newer Transfer SDK can be used as well
-helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
+test_environment.start_transfer_and_wait(t_spec)

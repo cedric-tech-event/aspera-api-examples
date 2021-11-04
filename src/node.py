@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
+# laurent.martin.aspera@fr.ibm.com
 import test_environment
-import faspmanager
-import helper_aspera_faspmanager
 import requests
-import logging
 import requests.auth
+import logging
 import json
 import sys
 
@@ -19,9 +18,9 @@ config=test_environment.CONFIG['node']
 upload_setup_request = {'transfer_requests':[{'transfer_request':{'paths':[{'destination':destination_folder}]}}]}
 
 request_headers={
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+}
 
 # call Node API with one transfer request to get one transfer spec
 response = requests.post(
@@ -45,4 +44,4 @@ for f in files_to_upload:
 logging.debug(t_spec)
 
 # start transfer, here we use the FASP Manager, but the newer Transfer SDK can be used as well
-helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
+test_environment.start_transfer_and_wait(t_spec)

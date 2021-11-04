@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # laurent.martin.aspera@fr.ibm.com
 import test_environment
-import os
-import sys
 import logging
+import sys
+import os
 
 # Example 1: download
 # Instead of using the soon deprecated FaspManager1 Python lib, let's use the transfer spec

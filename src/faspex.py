@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
+# laurent.martin.aspera@fr.ibm.com
 import test_environment
-import faspmanager
-import helper_aspera_faspmanager
 import requests
 import requests.auth
 import logging
 import json
 import sys
-
-
 
 # files to send
 package_files = sys.argv
@@ -50,4 +47,4 @@ for f in package_files:
     t_spec['paths'].append({'source':f})
 
 # send files into package
-helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
+test_environment.start_transfer_and_wait(t_spec)

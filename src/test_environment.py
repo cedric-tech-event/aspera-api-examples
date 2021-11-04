@@ -15,28 +15,30 @@ logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
 
 # get project main folder (..)
-main_folder=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+main_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # tell where to find legacy fasp manager lib
-sys.path.insert(1, os.path.join(main_folder,'lib'))
+sys.path.insert(1, os.path.join(main_folder, 'lib'))
 
 # if "ascp" is not already in PATH, add it here
 # os.environ["PATH"] += os.pathsep + 'path_to_folder_containing_ascp'
 
-CONFIG = yaml.load(open(os.path.join(main_folder,'config.yaml')), Loader=yaml.FullLoader)
+# configuration from configuration file
+CONFIG = yaml.load(open(os.path.join(main_folder, 'config.yaml')), Loader=yaml.FullLoader)
 
-tmp_folder=os.path.join(main_folder,'tmp')
+# where transfered files will be stored
+tmp_folder = os.path.join(main_folder, 'tmp')
 
 # debug http: see: https://stackoverflow.com/questions/10588644
 http_client.HTTPConnection.debuglevel = 1
 
 # set logger for debugging
-requests_log = logging.getLogger("requests.packages.urllib3")
-requests_log.setLevel(logging.DEBUG)
-requests_log.propagate = True
-helper_log = logging.getLogger("helper_aspera_faspmanager")
-helper_log.setLevel(logging.DEBUG)
-helper_log.propagate = True
+# requests_log = logging.getLogger("requests.packages.urllib3")
+# requests_log.setLevel(logging.DEBUG)
+# requests_log.propagate = True
+# helper_log = logging.getLogger("helper_aspera_faspmanager")
+# helper_log.setLevel(logging.DEBUG)
+# helper_log.propagate = True
 
 import helper_aspera_faspmanager
 
