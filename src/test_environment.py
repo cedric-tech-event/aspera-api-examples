@@ -37,6 +37,7 @@ if 'sdk' in CONFIG and CONFIG['sdk'] == 'faspmanager':
     import helper_aspera_faspmanager
 
     def start_transfer_and_wait(t_spec):
+        logging.debug(t_spec)
         helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
 
 else:
@@ -47,5 +48,8 @@ else:
     import helper_aspera_transfer_sdk
 
     def start_transfer_and_wait(t_spec):
+        # TODO: remove when transfer sdk bug fixed
+        t_spec['http_fallback'] = False
+        logging.debug(t_spec)
         helper_aspera_transfer_sdk.start_transfer_and_wait(t_spec)
 
