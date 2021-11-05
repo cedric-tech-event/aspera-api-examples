@@ -163,3 +163,9 @@ $ ./src/node.py bigfile.bin
 # Start developing your own app
 
 Copy and modify one of the examples.
+
+# Known Issues
+
+Transfer SDK: even if property "etc" is set to other folder, it looks for aspera-license file in "etc" folder.
+
+Transfer SDK: fails if `http_fallback` is True
