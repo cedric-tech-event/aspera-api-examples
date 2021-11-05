@@ -104,6 +104,25 @@ For this swap the commented lines in `cos.py`.
 
 Copy the file `config.tmpl` into `config.yaml` and fill.
 
+# Aspera on Cloud
+
+For Aspera on Cloud, several items are required:
+
+* `org` : The AoC Organization, i.e. the name before `.ibmaspera.com` in the URL
+* `user_email` : The user's IBMid
+* `private_key_path` : The path to the PEM file containing the user's private key. The user configured the associated public key in his AoC User's profile.
+* `client_id` : (see below) The client app identifier
+* `client_secret` : (see below) The client app secret
+
+`client_id` and `client_secret` can be:
+
+* either a specific application credential created in the admin interface of AoC (Integrations)
+* or one of the two global client id : the one of aspera connect/drive or the one of the legacy `aspera` CLI :
+    * `aspera.global-cli-client`
+    * `frpmsRsG4mjZ0PlxCgdJlvONqBg4Vlpz_IX7gXmBMAfsgMLy2FO6CXLodKfKAuhqnCqSptLbe_wdmnm9JRuEPO-PpFqpq_Kb`
+
+To retrieve the one of connect: `strings asperaconnect|grep -B1 '^aspera\.drive$'`
+
 # Execute examples
 
 ```
