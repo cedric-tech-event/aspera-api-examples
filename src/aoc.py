@@ -19,8 +19,12 @@ JWT_EXPIRY_OFFSET_SEC = 3600
 # AoC API : https://developer.ibm.com/apis/catalog?search=%22aspera%20on%20cloud%20api%22
 AOC_API_BASE = 'https://api.ibmaspera.com/api/v1/'
 
+package_name = sys.argv[1]
+
+transfer_sessions = int(sys.argv[2])
+
 # files to send
-package_files = sys.argv[1:]
+package_files = sys.argv[3:]
 
 # get conf file
 config = test_environment.CONFIG['aoc']
@@ -93,7 +97,7 @@ dropbox_info = response_data[0]
 package_creation = {
     'workspace_id': workspace_info['id'],
     'recipients':[{'id':dropbox_info['id'], 'type':'dropbox'}],
-    'name':'My package title',
+    'name':package_name,
     'note':'My package note'
 }
 
@@ -110,7 +114,7 @@ node_info = response.json()
 logging.debug(node_info)
 
 # tell Aspera what to expect in package: 1 transfer (can also be done after transfer)
-response = requests.put(AOC_API_BASE + "packages/%s" % package_info['id'], headers=request_headers, json={'sent':True, 'transfers_expected':1})
+response = requests.put(AOC_API_BASE + "packages/%s" % package_info['id'], headers=request_headers, json={'sent':True, 'transfers_expected':transfer_sessions})
 response.raise_for_status()
 
 # note we generate a bearer token for the specified node (all tags are not mandatory, but some are, like 'node')
@@ -146,6 +150,10 @@ t_spec = {
   'create_dir': True,
   'target_rate_kbps': 2000000
 }
+
+if transfer_sessions != 1:
+    t_spec['multi_session'] = transfer_sessions
+    t_spec['multi_session_threshold'] = 500000
 
 # add file list in transfer spec
 t_spec['paths'] = []

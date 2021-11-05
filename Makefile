@@ -12,11 +12,12 @@ all: libs
 	-killall asperatransferd
 	mkdir -p $(TMP)
 	date > $(TMP)/This_is_a_test.txt
+	dd of=$(TMP)/1G.bin bs=1k seek=$$((1024*1024)) count=0
 	$(SRC)/server.py
 	$(SRC)/faspex.py $(TMP)/This_is_a_test.txt
 	$(SRC)/node.py $(TMP)/This_is_a_test.txt
 	$(SRC)/cos.py $(TMP)/This_is_a_test.txt
-	$(SRC)/aoc.py 'faux:///bigfile?10g'
+	$(SRC)/aoc.py 'test package' 2 $(TMP)/1G.bin
 
 doc:
 	sed 's/^\(    [^:]*:\).*/\1 your_value_here/' < config.yaml > config.tmpl
@@ -38,7 +39,7 @@ sdk: .sdk_installed
 	cd $(TRANSFERSDK_DIR) && unzip ../transfer_sdk.zip
 	ln -s noarch $(TRANSFERSDK_DIR)/etc
 	touch .sdk_installed
-# the "ln -s" is because of bug in transfer sdk: it requires "etc" even if property "etc" is set in config file
+# TODO: remove when transfersdk fixed: the "ln -s" is because of bug in transfer sdk: it requires "etc" even if property "etc" is set in config file
 clean:
 	rm -fr $(TMP) $(LIB)
 	find . -name __pycache__|xargs rm -fr
