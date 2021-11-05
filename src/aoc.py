@@ -20,7 +20,7 @@ JWT_EXPIRY_OFFSET_SEC = 3600
 AOC_API_BASE = 'https://api.ibmaspera.com/api/v1/'
 
 # files to send
-package_files = sys.argv
+package_files = sys.argv[1:]
 
 # get conf file
 config = test_environment.CONFIG['aoc']

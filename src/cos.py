@@ -8,7 +8,7 @@ import json
 import sys
 
 # get file to upload from command line
-files_to_upload = sys.argv
+files_to_upload = sys.argv[1:]
 destination_folder='/'
 
 # get Aspera Transfer Service Node information using service credential file

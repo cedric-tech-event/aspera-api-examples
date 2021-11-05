@@ -8,7 +8,7 @@ import json
 import sys
 
 # get file to upload from command line
-files_to_upload = sys.argv
+files_to_upload = sys.argv[1:]
 destination_folder='/Upload'
 
 # get node information from config file
