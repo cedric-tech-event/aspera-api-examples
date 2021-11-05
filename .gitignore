@@ -8,3 +8,4 @@ config.yaml
 
 lib/*
 tmp/*
+sdk
