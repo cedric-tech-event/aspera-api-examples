@@ -63,6 +63,16 @@ Example:
     shared_inbox: TheSharedInbox
 ```
 
+# Quick start
+
+After having created the configuration file execute: `make`, it will:
+
+* download SDKs
+* installed required python modules
+* run the sample programs
+
+If you prefer to do it your way, read the [`Makefile`](Makefile).
+
 # Pepare python 3
 
 When `make` is invoked, it will check and install python module.
