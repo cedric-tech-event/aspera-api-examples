@@ -18,21 +18,17 @@ The sample code in `src` shows how to transfer files using:
 
 1. [Create the configuration file and fill with valid server addresses and credentials](#config)
 
-1. Execute all tests:
+1. Execute all tests: `make`
 
-    ```bash
-make
-    ```
+This will:
 
-    This will:
-
-    * Check and Download SDKs
-    * Check and Install required python modules
-    * Run sample programs
+* Check and Download SDKs
+* Check and Install required python modules
+* Run sample programs with sample files using servers as configured in the config file.
 
 If you prefer to test a single application, you may configure only the appropriate section in the config file , have a look to the [`Makefile`](Makefile) to check how example is invoked and execute just the example relevant to you.
 
-# <a href="config"></a>Configuration file
+# <a id="config"></a>Configuration file
 
 A template configuration file is provided: [`config.tmpl`](config.tmpl).
 
@@ -98,7 +94,7 @@ When `make` is invoked (Quick Start), it will check and install:
 
 Check the [`Makefile`](Makefile) for details.
 
-# <a href="sdk"></a>SDK Selection
+# <a id="sdk"></a>SDK Selection
 
 TransferSDK (Legacy) versus FaspManager (Current)
 
