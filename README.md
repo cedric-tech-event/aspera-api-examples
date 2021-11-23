@@ -14,11 +14,36 @@ The sample code in `src` shows how to transfer files using:
 
 [General access to all IBM Aspera APIs here](https://developer.ibm.com/apis/catalog/?search=aspera)
 
-# Create the configuration file with your credentials
+# Quick start
+
+1. [Create the configuration file and fill with valid server addresses and credentials](#config)
+
+1. Execute all tests:
+
+    ```bash
+make
+    ```
+
+    This will:
+
+    * Check and Download SDKs
+    * Check and Install required python modules
+    * Run sample programs
+
+If you prefer to test a single application, you may configure only the appropriate section in the config file , have a look to the [`Makefile`](Makefile) to check how example is invoked and execute just the example relevant to you.
+
+# <a href="config"></a>Configuration file
+
+A template configuration file is provided: [`config.tmpl`](config.tmpl).
 
 Copy the file `config.tmpl` into `config.yaml` and fill with your own server addresses, credentials and parameters.
 
-Set the parameter `arch` to the architecture used, one of:
+```bash
+cp config.tmpl config.yaml
+vi config.yaml
+```
+
+Set the parameter `arch` to the architecture used (yes ... it could be auto-detected), one of:
 
 * `osx-amd64`
 * `windows-amd64`
@@ -27,25 +52,25 @@ Set the parameter `arch` to the architecture used, one of:
 * `linux-ppc64le`
 * `aix-ppc64`
 
-(Yes ... it could be auto-detected)
+The parameter `sdk` selects which API will be used to start transfer, refer to section: [SDK Selection](#sdk), prefer to use `transfer`.
 
-Example:
+Example (with random credentials):
 
 ```
 ---
   arch: osx-amd64
   sdk: transfer
   faspex:
+    url: https://faspex.example.com/aspera/faspex
     user: laurent
     pass: Sup3rS3cR3T!
-    url: https://faspex.example.com/aspera/faspex
   node:
+    url: https://node.example.com:9092
     user: node_aspera
     pass: Sup3rS3cR3T!
-    url: https://node.example.com:9092
   cos:
-    bucket: mybucket
     endpoint: https://s3.eu-de.cloud-object-storage.appdomain.cloud
+    bucket: mybucket
     key: FADSFds4324FDSAD25342FAsdfs-54FDFD54UAFtw8
     crn: 'crn:v1:bluemix:public:cloud-object-storage:global:a/4343hj4hj3h43jhj43hj:h3j2h3j2-5029-34jk-af65-hj43hj43hj43hj::'
     auth: https://iam.cloud.ibm.com/identity/token
@@ -56,41 +81,31 @@ Example:
   aoc:
     org: acme
     user_email: laurent.martin.aspera@fr.ibm.com
-    private_key_path: /Users/laurent/.aspera/ascli/aspera_on_cloud_key
+    private_key_path: /Users/laurent/.aspera/ascli/my_aoc_key
     client_id: aspera.global-cli-client
     client_secret: frpmsRsG4mjZ0PlxCgdJlvONqBg4Vlpz_IX7gXmBMAfsgMLy2FO6CXLodKfKAuhqnCqSptLbe_wdmnm9JRuEPO-PpFqpq_Kb
     workspace: Default
     shared_inbox: TheSharedInbox
 ```
 
-# Quick start
+# Required external components
 
-After having created the configuration file execute: `make`, it will:
+When `make` is invoked (Quick Start), it will check and install:
 
-* download SDKs
-* installed required python modules
-* run the sample programs
+* Required python modules
+* Aspera FaspManager (Legacy SDK)
+* Aspera Transfer SDK (Current SDK)
 
-If you prefer to do it your way, read the [`Makefile`](Makefile).
+Check the [`Makefile`](Makefile) for details.
 
-# Pepare python 3
+# <a href="sdk"></a>SDK Selection
 
-When `make` is invoked, it will check and install python module.
-
-Else to install packages used by examples refer to the [`Makefile`](Makefile).
-
-# Get the SDK
-
-When `make` is invoked, it will check and install both FaspManager and TransferSDK.
-
-Else to install SDKs used by examples refer to the [`Makefile`](Makefile).
-
-# Aspera Transfer using python: TransferSDK versus FaspManager
+TransferSDK (Legacy) versus FaspManager (Current)
 
 To start transfers, sample code uses either:
 
 * The current [Transfer SDK](https://developer.ibm.com/apis/catalog?search=%22aspera%20transfer%20sdk%22) which is recommended for new developments.
-* Or the older [FASPManager API](https://developer.ibm.com/apis/catalog?search=%22fasp%20manager%20sdk%22) together with a helper method that translates the transfer_spec into the Legacy FaspManager structure.
+* Or the legacy [FASPManager API](https://developer.ibm.com/apis/catalog?search=%22fasp%20manager%20sdk%22) together with a helper method that translates the **transfer_spec** into the Legacy FaspManager structure.
 
 In both cases, sample code uses the transfer spec structure, refer to API reference in Transfer SDK.
 
@@ -98,15 +113,15 @@ Use of one or the other is controlled by the configuration parameter: `sdk`, set
 
 # Structure of examples
 
-Each of the example code is strutured like this:
+Each of the sample programs are strutured like this:
 
 * `import test_environment` : `test_environment.py` is located in the same folder as the example :
 	* it reads the configuration file
 	* setup debug logging
-	* defines the method: `start_transfer_and_wait` which takes a transfer_spec as argument to start a transfer.
+	* defines the method: `start_transfer_and_wait` which takes a **transfer_spec** as argument to start a transfer.
 * get configuration, urls, username, credentials, secrets, from test_environment.CONFIG
-* call application API to build a transfer_spec
-* use this transfer_spec to start a transfer
+* call application API to build a **transfer_spec**
+* call `start_transfer_and_wait ` with this **transfer_spec** to start a transfer
 
 # COS service credentials
 
@@ -147,25 +162,8 @@ For Aspera on Cloud, several items are required:
 
 For example to extract the ones of Aspera Connect (Drive): `strings asperaconnect|grep -B1 '^aspera\.drive$'`
 
-# Execute examples
+# Known Transfer SDK Issues
 
-```
-$ make
-```
+Even if property `etc` is set to other folder, it looks for aspera-license file in `etc` folder (will be fixed in next release).
 
-Or simply the sample code you want and provide one argument: path to a file to send:
-
-```
-$ truncate --size=1G bigfile.bin
-$ ./src/node.py bigfile.bin
-```
-
-# Start developing your own app
-
-Copy and modify one of the examples.
-
-# Known Issues
-
-Transfer SDK: even if property "etc" is set to other folder, it looks for aspera-license file in "etc" folder.
-
-Transfer SDK: fails if `http_fallback` is True
+Transfer fails if `http_fallback` is `True`.
