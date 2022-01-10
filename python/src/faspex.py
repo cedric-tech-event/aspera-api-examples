@@ -13,7 +13,7 @@ package_files = sys.argv[1:]
 # package creation information for Faspex API v3
 delivery_info = {
     "delivery": {
-        "title": "Yo man!",
+        "title": "Sent from python example",
         "recipients": ["admin"],
         "sources": [{
             "paths": package_files

@@ -5,9 +5,9 @@ import transfer_pb2_grpc as transfer_manager_grpc
 import os
 import subprocess
 
+# TODO: take from conf file yaml
 SDK_GRPC_ADDR = '127.0.0.1'
 SDK_GRPC_PORT = 55002
-
 
 def start_transfer_and_wait(transfer_spec):
     # create a connection to the transfer manager daemon
@@ -20,7 +20,7 @@ def start_transfer_and_wait(transfer_spec):
         except grpc.FutureTimeoutError:
             print('FAILED: trying to start daemon')
             # else prepare config and start
-            bin_folder = os.environ['TRANSFERSDK_ARCH']
+            bin_folder = os.environ['CONFIG_TRSDK_DIR_ARCH']
             config = {
                 'address': SDK_GRPC_ADDR,
                 'port': SDK_GRPC_PORT,
@@ -28,7 +28,7 @@ def start_transfer_and_wait(transfer_spec):
                     'use_embedded': False,
                     'user_defined': {
                         'bin':bin_folder,
-                        'etc':os.environ['TRANSFERSDK_NOARCH'],
+                        'etc':os.environ['CONFIG_TRSDK_DIR_GENERIC'],
                     }
                 }
             }

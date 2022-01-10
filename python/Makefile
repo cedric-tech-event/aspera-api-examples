@@ -1,47 +1,40 @@
+# run make in upper folder to generate this file
+include ../config.make
+
 SRC=src
-TMP=tmp
-LIB=sdk
+TMPDIR=tmp
 
 # environment required for the samples
-FASPMANAGER_DIR=$(LIB)/fspmgr
-TRANSFERSDK_DIR=$(LIB)/trsdk
 
-export FASPMANAGER_DIR TRANSFERSDK_DIR
+# used by test scripts
+export CONFIG_SDK_ROOT CONFIG_FSMGR_DIR CONFIG_TRSDK_DIR_ARCH CONFIG_TRSDK_DIR_GENERIC CONFIG_YAML TMPDIR
 
 all: libs
-	-killall asperatransferd
-	mkdir -p $(TMP)
-	date > $(TMP)/This_is_a_test.txt
-	dd of=$(TMP)/1G.bin bs=1k seek=$$((1024*1024)) count=0
+	mkdir -p $(TMPDIR)
+	date > $(TMPDIR)/This_is_a_test.txt
+	dd of=$(TMPDIR)/1G.bin bs=1k seek=$$((1024*1024)) count=0
 	$(SRC)/server.py
-	$(SRC)/faspex.py $(TMP)/This_is_a_test.txt
-	$(SRC)/node.py $(TMP)/This_is_a_test.txt
-	$(SRC)/cos.py $(TMP)/This_is_a_test.txt
-	$(SRC)/aoc.py 'test package' 2 $(TMP)/1G.bin
-
-doc:
-	sed 's/^\(    [^:]*:\).*/\1 your_value_here/' < config.yaml > config.tmpl
-
-libs: .libs_installed
-.libs_installed: sdk
-	pip3 install -r $(TRANSFERSDK_DIR)/noarch/connectors/python/requirements.txt
+	$(SRC)/faspex.py $(TMPDIR)/This_is_a_test.txt
+	$(SRC)/node.py $(TMPDIR)/This_is_a_test.txt
+	$(SRC)/cos.py $(TMPDIR)/This_is_a_test.txt
+	$(SRC)/aoc.py 'test package' 2 $(TMPDIR)/1G.bin
+$(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt:
+	@echo "run make in upper folder to install transfer SDK"
+	exit 1
+libs: .is_installed_libs
+.is_installed_libs: .is_installed_sdk $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt
+	pip3 install -r $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt
 	pip3 install requests PyYAML pyjwt
-	touch .libs_installed
-
-sdk: .sdk_installed
-.sdk_installed: 
-	rm -fr $(LIB)
-	mkdir -p $(FASPMANAGER_DIR)
-	curl -s http://download.asperasoft.com/download/sw/sdk/faspmanager/python/faspmanager-sdk-python-3.7.2-d787953b521f059412ad1713afaa38ccbb760a47.zip -o $(LIB)/faspmanager-sdk-python-3.7.2.zip
-	cd $(FASPMANAGER_DIR) && unzip ../faspmanager-sdk-python-3.7.2.zip
-	mkdir -p $(FASPMANAGER_DIR) $(TRANSFERSDK_DIR)
-	curl -s https://eudemo.asperademo.com/aspera/faspex/transfer_sdk.zip -o $(LIB)/transfer_sdk.zip
-	cd $(TRANSFERSDK_DIR) && unzip ../transfer_sdk.zip
-	ln -s noarch $(TRANSFERSDK_DIR)/etc
-	touch .sdk_installed
+	touch $@
+sdk: .is_installed_sdk
+.is_installed_sdk: 
+	mkdir -p $(CONFIG_FSMGR_DIR)
+	curl -s http://download.asperasoft.com/download/sw/sdk/faspmanager/python/faspmanager-sdk-python-3.7.2-d787953b521f059412ad1713afaa38ccbb760a47.zip -o $(CONFIG_FSMGR_DIR)/faspmanager-sdk-python-3.7.2.zip
+	unzip -d $(CONFIG_FSMGR_DIR) $(CONFIG_FSMGR_DIR)/faspmanager-sdk-python-3.7.2.zip
+	#ln -s noarch $(CONFIG_TRSDK_ROOT)/etc
+	touch $@
 # TODO: remove when transfersdk fixed: the "ln -s" is because of bug in transfer sdk: it requires "etc" even if property "etc" is set in config file
 clean:
-	rm -fr $(TMP) $(LIB)
+	rm -f .is_installed_libs .is_installed_sdk
+	rm -fr $(TMPDIR) $(CONFIG_FSMGR_DIR)
 	find . -name __pycache__|xargs rm -fr
-	rm -f .libs_installed .sdk_installed
-	-killall asperatransferd

@@ -1,0 +1,35 @@
+package client;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+import java.net.URL;
+import java.util.Map;
+
+// Receive one file from demo server using ssh credentials and transferspec v2
+public class ServerFileDownloadExample {
+	public static void main(String... args) throws java.io.FileNotFoundException, java.net.MalformedURLException {
+		// get simplified testing environment
+		final TestEnvironment test_environment = new TestEnvironment();
+		final Map<String, Object> server_conf = (Map<String, Object>) test_environment.config.get("server");
+		final URL fasp_url = new URL(server_conf.get("url").toString().replaceFirst("^ssh:", "http:"));
+		// transfer spec version 2 (JSON)
+		final JSONObject transferSpecV2 = new JSONObject()//
+				.put("session_initiation", new JSONObject()//
+						.put("ssh", new JSONObject()//
+								.put("ssh_port", fasp_url.getPort())//
+								.put("remote_user", server_conf.get("user").toString())//
+								.put("remote_password", server_conf.get("pass").toString())))//
+				.put("direction", "recv")//
+				.put("remote_host", fasp_url.getHost())//
+				.put("title", "strategic")//
+				.put("assets", new JSONObject()//
+						.put("destination_root", System.getProperty("user.dir"))//
+						.put("paths", new JSONArray()//
+								.put(new JSONObject()//
+										.put("source", "aspera-test-dir-tiny/200KB.1")//
+										.put("destination", "downloaded_file"))));
+
+		// execute transfer
+		test_environment.start_transfer_and_wait(transferSpecV2.toString());
+	}
+}

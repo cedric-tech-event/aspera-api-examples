@@ -1,0 +1,34 @@
+package client;
+
+import org.json.JSONObject;
+import org.json.JSONArray;
+import java.net.URL;
+import java.util.Map;
+
+// Send one file to COS using transferspecv2
+public class COSFileUploadExample {
+	public static void main(String... args) throws java.io.FileNotFoundException, java.net.MalformedURLException {
+		// get simplified testing environment
+		final TestEnvironment test_environment = new TestEnvironment();
+		final Map<String, Object> icos_conf = (Map<String, Object>) test_environment.config.get("cos");
+
+		// build transfer spec version 2 (JSON)
+		final JSONObject transferSpecV2 = new JSONObject()//
+				.put("session_initiation", new JSONObject()//
+						.put("icos", new JSONObject()//
+								.put("api_key", icos_conf.get("key").toString())//
+								.put("bucket", icos_conf.get("bucket").toString())//
+								.put("ibm_service_instance_id", icos_conf.get("crn").toString())//
+								.put("ibm_service_endpoint", icos_conf.get("endpoint").toString())))//
+				.put("direction", "send")//
+				.put("title", "strategic")//
+				.put("assets", new JSONObject()//
+						.put("destination_root", "/")//
+						.put("paths", new JSONArray()//
+								.put(new JSONObject()//
+										.put("source", "faux:///10m?10m"))));
+
+		// execute transfer
+		test_environment.start_transfer_and_wait(transferSpecV2.toString());
+	}
+}
