@@ -5,6 +5,7 @@ __pycache__/
 .is_*
 # config files with secrets
 config.yaml
+config.make
 package-lock.json
 sdk/
 .gradle
