@@ -12,7 +12,9 @@ The sample code in `src` shows how to transfer files using:
 * IBM Aspera Faspex
 * IBM Aspera on Cloud using JWT and a private key
 
-1. Test in language folder:
+## Quick start
+
+Once the main folder has been initialized:
 
 ```
 cd python
@@ -22,7 +24,7 @@ make
 
 This will:
 
-* Check and Download SDKs
+* Check and Download FaspManager
 * Check and Install required python modules
 * Run sample programs with sample files using servers as configured in the config file.
 
@@ -34,7 +36,6 @@ When `make` is invoked (Quick Start), it will check and install:
 
 * Required python modules
 * Aspera FaspManager (Legacy SDK)
-* Aspera Transfer SDK (Current SDK)
 
 Check the [`Makefile`](Makefile) for details.
 
