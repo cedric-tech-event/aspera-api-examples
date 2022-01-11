@@ -17,6 +17,7 @@ all: libs
 	$(SRC)/faspex.py $(TMPDIR)/This_is_a_test.txt
 	$(SRC)/node.py $(TMPDIR)/This_is_a_test.txt
 	$(SRC)/cos.py $(TMPDIR)/This_is_a_test.txt
+	$(SRC)/cos2.py $(TMPDIR)/This_is_a_test.txt
 	$(SRC)/aoc.py 'test package' 2 $(TMPDIR)/1G.bin
 $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt:
 	@echo "run make in upper folder to install transfer SDK"
