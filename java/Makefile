@@ -3,12 +3,14 @@ include ../config.make
 ../config.make:
 	@echo "Run make in upper folder to create config.make"
 	@exit 1
-all:: .compiled
-	java -cp build/libs/javasamples-1.1-all.jar client.COSFileUploadExample
-.compiled: build.gradle
-	gradle build
-	touch $@
+PROJECT_NAME=javasamples
+PROJECT_VERSION=0.1
+JARFILE=build/libs/$(PROJECT_NAME)-$(PROJECT_VERSION)-all.jar
+all::
+	gradle build -Pconfig_proto_dir=$(CONFIG_TRSDK_ROOT)/noarch/connectors
+	java -cp $(JARFILE) -Dconfig_yaml=$(CONFIG_YAML) client.COSFileUploadExample
+	java -cp $(JARFILE) -Dconfig_yaml=$(CONFIG_YAML) client.ServerFileDownloadExample
 clean:
-	gradle clean
-	rm -fr .gradle .compiled
+	gradle clean -Pconfig_proto_dir=$(CONFIG_TRSDK_ROOT)/noarch/connectors
+	rm -fr .gradle
 	rm -f downloaded_file

@@ -2,23 +2,23 @@ package client;
 
 import org.json.JSONObject;
 import org.json.JSONArray;
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 
 // Receive one file from demo server using ssh credentials and transferspec v2
 public class ServerFileDownloadExample {
-	public static void main(String... args) throws java.io.FileNotFoundException, java.net.MalformedURLException {
+	public static void main(String... args) throws java.io.FileNotFoundException, java.net.URISyntaxException {
 		// get simplified testing environment
 		final TestEnvironment test_environment = new TestEnvironment();
-		final Map<String, Object> server_conf = (Map<String, Object>) test_environment.config.get("server");
-		final URL fasp_url = new URL(server_conf.get("url").toString().replaceFirst("^ssh:", "http:"));
+		final Map<String, String> server_conf = (Map<String, String>) test_environment.config.get("server");
+		final URI fasp_url = new URI(server_conf.get("url"));
 		// transfer spec version 2 (JSON)
 		final JSONObject transferSpecV2 = new JSONObject()//
 				.put("session_initiation", new JSONObject()//
 						.put("ssh", new JSONObject()//
 								.put("ssh_port", fasp_url.getPort())//
-								.put("remote_user", server_conf.get("user").toString())//
-								.put("remote_password", server_conf.get("pass").toString())))//
+								.put("remote_user", server_conf.get("user"))//
+								.put("remote_password", server_conf.get("pass"))))//
 				.put("direction", "recv")//
 				.put("remote_host", fasp_url.getHost())//
 				.put("title", "strategic")//

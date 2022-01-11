@@ -4,7 +4,7 @@ import ibm.aspera.transferservice.Transfer;
 import ibm.aspera.transferservice.TransferServiceGrpc;
 import io.grpc.ManagedChannelBuilder;
 import org.yaml.snakeyaml.Yaml;
-import java.net.URL;
+import java.net.URI;
 import java.util.Map;
 import java.util.Iterator;
 
@@ -13,9 +13,9 @@ public class TestEnvironment {
 	public Map<String, Object> config;
 	private TransferServiceGrpc.TransferServiceBlockingStub client;
 
-	public TestEnvironment() throws java.io.FileNotFoundException, java.net.MalformedURLException {
-		config = new Yaml().load(new java.io.FileReader("../config.yaml"));
-		final URL grpc_url = new URL(config.get("trsdk_url").toString().replaceFirst("^grpc:", "http:"));
+	public TestEnvironment() throws java.io.FileNotFoundException, java.net.URISyntaxException {
+		config = new Yaml().load(new java.io.FileReader(System.getProperty("config_yaml")));
+		final URI grpc_url = new URI(config.get("trsdk_url").toString());
 		// create a connection to the transfer sdk daemon
 		client = TransferServiceGrpc.newBlockingStub(ManagedChannelBuilder.forAddress(grpc_url.getHost(), grpc_url.getPort()).usePlaintext().build());
 	}
