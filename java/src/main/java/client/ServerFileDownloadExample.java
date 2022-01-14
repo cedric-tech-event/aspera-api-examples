@@ -23,7 +23,7 @@ public class ServerFileDownloadExample {
 				.put("remote_host", fasp_url.getHost())//
 				.put("title", "strategic")//
 				.put("assets", new JSONObject()//
-						.put("destination_root", System.getProperty("user.dir"))//
+						.put("destination_root", System.getProperty("java.io.tmpdir"))//
 						.put("paths", new JSONArray()//
 								.put(new JSONObject()//
 										.put("source", "aspera-test-dir-tiny/200KB.1")//
