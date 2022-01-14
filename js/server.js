@@ -22,22 +22,23 @@ var t_spec1_generic = {
 // Instead of using the soon deprecated FaspManager1 Python lib, let's use the transfer spec
 // direction is relative to us, client, i.e. receive = download
 const test1 = (success_cb) => {
-    console.log('======Test 1: download');
-    t_spec1_generic.direction='receive';
-    // note that the destination root on download is relative to the CWD of transferd, NOT this process, so prefer to use abs. paths
-    t_spec1_generic.destination_root=test_environment.tmp_folder;
-    t_spec1_generic.paths=[{source: '/aspera-test-dir-tiny/200KB.1'}];
-    test_environment.start_transfer_and_wait(t_spec1_generic,success_cb);
+	console.log('======Test 1: download');
+	t_spec1_generic.direction='receive';
+	// note that the destination root on download is relative to the CWD of transferd, NOT this process
+	// so prefer to use abs. paths
+	t_spec1_generic.destination_root=test_environment.tmp_folder;
+	t_spec1_generic.paths=[{source: '/aspera-test-dir-tiny/200KB.1'}];
+	test_environment.start_transfer_and_wait(t_spec1_generic,success_cb);
 }
 
 // Example 2: upload: single file upload to existing folder.
 const test2 = (success_cb) => {
-    console.log('======Test 2: upload file')
-    t_spec1_generic.direction='send';
-    t_spec1_generic.destination_root='/Upload';
-    t_spec1_generic.paths=[{source: local_file}];
-    t_spec1_generic.tags={mysample_tag:'hello'};
-    test_environment.start_transfer_and_wait(t_spec1_generic,success_cb);
+	console.log('======Test 2: upload file')
+	t_spec1_generic.direction='send';
+	t_spec1_generic.destination_root='/Upload';
+	t_spec1_generic.paths=[{source: local_file}];
+	t_spec1_generic.tags={mysample_tag:'hello'};
+	test_environment.start_transfer_and_wait(t_spec1_generic,success_cb);
 }
 // check file is uploaded by connecting to: http://demo.asperasoft.com/aspera/user/ with same creds
 
@@ -61,4 +62,19 @@ const test4 = (success_cb) => {
 	test_environment.start_transfer_and_wait(t_spec1_generic,success_cb);
 }
 
-test_environment.wait_for_server(()=>{test1(()=>{test2(()=>{test3(()=>{test4(()=>{console.log('Done!')})})})})})
+// test runner is sequentially called after success of each test
+var index=0;
+const test_runner = (success_cb) => {
+	index++;
+	switch(index){
+	case 1: test1(test_runner);break;
+	case 2: test2(test_runner);break;
+	case 3: test3(test_runner);break;
+	case 4: test4(test_runner);break;
+	case 5: console.log('Finished all tests!');break;
+	default: throw 'Error: shall not reach here'
+	}
+}
+
+// wait for server and start test 1
+test_environment.wait_for_server(test_runner);
