@@ -29,7 +29,6 @@ package_files = sys.argv[3:]
 # get conf file
 config = test_environment.CONFIG['aoc']
 
-
 # generate a bearer token for given scope using AoC API
 def get_bearer(scope):
     with open(config['private_key_path']) as fin:
