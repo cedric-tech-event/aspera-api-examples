@@ -13,4 +13,3 @@ all::
 clean:
 	gradle clean -Pconfig_proto_dir=$(CONFIG_TRSDK_ROOT)/noarch/connectors
 	rm -fr .gradle
-	rm -f downloaded_file
