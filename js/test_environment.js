@@ -18,9 +18,8 @@ const transfersdk = grpc.loadPackageDefinition(packageDefinition).transfersdk;
 const yconf = yaml.load(fs.readFileSync(process.env.CONFIG_YAML, 'utf8'));
 // create a connection to the transfer manager daemon
 const grpc_url = new URL(yconf['trsdk_url'])
-if (!(grpc_url.protocol === 'grpc:')) {
-	throw "Expecting gRPC protocol"
-}
+assert(grpc_url.protocol === 'grpc:',"Expecting gRPC protocol")
+
 const client = new transfersdk.TransferService(grpc_url.hostname + ":" + grpc_url.port, grpc.credentials.createInsecure());
 
 module.exports = {
