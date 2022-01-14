@@ -5,17 +5,19 @@ const path = require('path')
 const assert = require('assert');
 
 // get destination server from example config
-const server_url = new URL(test_environment.config.server.url)
+const server_config = test_environment.config.server;
+const server_url = new URL(server_config.url)
 assert(server_url.protocol === 'ssh:', 'Expecting SSH protocol');
 
+// downloaded file
 const local_file = path.join('/',test_environment.tmp_folder, '200KB.1');
 
 // base transfer spec with server information
 var t_spec1_generic = {
 	remote_host: server_url.hostname,
-	remote_user: test_environment.config.server.user,
-	remote_password: test_environment.config.server.pass,
 	ssh_port: parseInt(server_url.port),
+	remote_user: server_config.user,
+	remote_password: server_config.pass,
 }
 
 // Example 1: download
@@ -33,7 +35,7 @@ const test1 = (success_cb) => {
 
 // Example 2: upload: single file upload to existing folder.
 const test2 = (success_cb) => {
-	console.log('======Test 2: upload file')
+	console.log('======Test 2: upload file');
 	t_spec1_generic.direction='send';
 	t_spec1_generic.destination_root='/Upload';
 	t_spec1_generic.paths=[{source: local_file}];
@@ -65,14 +67,14 @@ const test4 = (success_cb) => {
 // test runner is sequentially called after success of each test
 var index=0;
 const test_runner = (success_cb) => {
-	index++;
+	++index;
 	switch(index){
-	case 1: test1(test_runner);break;
-	case 2: test2(test_runner);break;
-	case 3: test3(test_runner);break;
-	case 4: test4(test_runner);break;
-	case 5: console.log('Finished all tests!');break;
-	default: throw 'Error: shall not reach here'
+		case 1: test1(test_runner);break;
+		case 2: test2(test_runner);break;
+		case 3: test3(test_runner);break;
+		case 4: test4(test_runner);break;
+		case 5: console.log('Finished all tests!');break;
+		default: throw 'Error: shall not reach here'
 	}
 }
 
