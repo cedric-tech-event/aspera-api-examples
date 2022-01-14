@@ -40,6 +40,8 @@ else:
     sys.path.insert(1, os.path.join(os.environ['CONFIG_TRSDK_DIR_GENERIC'], 'connectors', 'python'))
     import helper_aspera_transfer_sdk
 
+    helper_aspera_transfer_sdk.set_grpc_url(CONFIG['trsdk_url'])
+
     def start_transfer_and_wait(t_spec):
         # TODO: remove when transfer sdk bug fixed
         t_spec['http_fallback'] = False

@@ -1,17 +1,25 @@
-import grpc
-import json
 import transfer_pb2 as transfer_manager
 import transfer_pb2_grpc as transfer_manager_grpc
+import grpc
+import json
 import os
 import subprocess
+#from asyncio.windows_events import NULL
+from urllib.parse import urlparse
 
-# TODO: take from conf file yaml
-SDK_GRPC_ADDR = '127.0.0.1'
-SDK_GRPC_PORT = 55002
+sdk_grpc_url = None
+
+def set_grpc_url(url):
+    global sdk_grpc_url
+    print("Hello")
+    sdk_grpc_url=url
 
 def start_transfer_and_wait(transfer_spec):
+    global sdk_grpc_url
+    assert sdk_grpc_url is not None, 'call set_grpc_url to set grpc url'
+    grpc_url=urlparse(sdk_grpc_url)
     # create a connection to the transfer manager daemon
-    channel = grpc.insecure_channel(SDK_GRPC_ADDR + ':' + str(SDK_GRPC_PORT))
+    channel = grpc.insecure_channel(grpc_url.hostname + ':' + str(grpc_url.port))
     # try to start daemon a few times if needed
     for i in range(0, 2):
         try:
@@ -22,8 +30,8 @@ def start_transfer_and_wait(transfer_spec):
             # else prepare config and start
             bin_folder = os.environ['CONFIG_TRSDK_DIR_ARCH']
             config = {
-                'address': SDK_GRPC_ADDR,
-                'port': SDK_GRPC_PORT,
+                'address': grpc_url.hostname,
+                'port': grpc_url.port,
                 'fasp_runtime': {
                     'use_embedded': False,
                     'user_defined': {
