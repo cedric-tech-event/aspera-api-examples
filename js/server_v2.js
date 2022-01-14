@@ -32,4 +32,5 @@ const transferSpecV2 = {
 	}
 };
 
-test_environment.start_transfer_and_wait(transferSpecV2);
+test_environment.wait_for_server(()=>{test_environment.start_transfer_and_wait(transferSpecV2,()=>{console.log('Done!')});})
+
