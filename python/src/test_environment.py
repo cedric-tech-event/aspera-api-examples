@@ -10,6 +10,12 @@ except ImportError:
     # Python 2
     import httplib as http_client
 
+assert(os.environ['CONFIG_YAML'], 'env var CONFIG_YAML is missing');
+assert(os.environ['CONFIG_TMPDIR'], 'env var CONFIG_TMPDIR is missing');
+assert(os.environ['CONFIG_FSMGR_DIR'], 'env var CONFIG_FSMGR_DIR is missing');
+assert(os.environ['CONFIG_TRSDK_DIR_ARCH'], 'env var CONFIG_TRSDK_DIR_ARCH is missing');
+assert(os.environ['CONFIG_TRSDK_DIR_GENERIC'], 'env var CONFIG_TRSDK_DIR_GENERIC is missing');
+
 # set logger for debugging
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
@@ -18,7 +24,7 @@ logging.getLogger().setLevel(logging.DEBUG)
 http_client.HTTPConnection.debuglevel = 1
 
 # where transfered files will be stored
-tmp_folder = os.environ['TMPDIR']
+tmp_folder = os.environ['CONFIG_TMPDIR']
 
 # use "ascp" in PATH, add the one from sdk
 os.environ['PATH'] += os.environ['CONFIG_TRSDK_DIR_ARCH']
