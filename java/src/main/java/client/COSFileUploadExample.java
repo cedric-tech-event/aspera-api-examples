@@ -6,13 +6,15 @@ import java.util.Map;
 
 // Send one file to COS using transferspecv2
 public class COSFileUploadExample {
-	public static void main(String... args) throws java.io.FileNotFoundException, java.net.URISyntaxException {
+	public static void main(String... args) {
 		// get simplified testing environment
 		final TestEnvironment test_environment = new TestEnvironment();
+		// get test COS bucket credentials
 		final Map<String, String> icos_conf = (Map<String, String>) test_environment.config.get("cos");
 
 		// build transfer spec version 2 (JSON)
 		final JSONObject transferSpecV2 = new JSONObject()//
+				.put("title", "COS download")//
 				.put("session_initiation", new JSONObject()//
 						.put("icos", new JSONObject()//
 								.put("api_key", icos_conf.get("key"))//
@@ -20,7 +22,6 @@ public class COSFileUploadExample {
 								.put("ibm_service_instance_id", icos_conf.get("crn"))//
 								.put("ibm_service_endpoint", icos_conf.get("endpoint"))))//
 				.put("direction", "send")//
-				.put("title", "strategic")//
 				.put("assets", new JSONObject()//
 						.put("destination_root", "/")//
 						.put("paths", new JSONArray()//

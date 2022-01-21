@@ -1,11 +1,11 @@
-# Laurent's API examples for Aspera using Java
+# Examples using Java
 
-Note:
+The TestEnvironment class checks if the daemon is running, and if not will start it before running the test.
 
-The transfer daemon must be started manually:
+Alternatively it is possible to go to the main folder in a separate terminal and type:
 
-go to the main folder and type:
-
-```
+```bash
 make startdaemon
 ```
+
+This shows logs on terminal.
