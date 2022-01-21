@@ -14,7 +14,7 @@ public class COSFileUploadExample {
 
 		// build transfer spec version 2 (JSON)
 		final JSONObject transferSpecV2 = new JSONObject()//
-				.put("title", "COS download")//
+				.put("title", "COS upload")//
 				.put("session_initiation", new JSONObject()//
 						.put("icos", new JSONObject()//
 								.put("api_key", icos_conf.get("key"))//
