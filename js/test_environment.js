@@ -5,13 +5,13 @@ const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
 const assert = require('assert');
 
-assert(process.env.CONFIG_TRSDK_DIR_GENERIC, 'CONFIG_TRSDK_DIR_GENERIC env var is missing');
+assert(process.env.CONFIG_TRSDK_PROTO, 'CONFIG_TRSDK_PROTO env var is missing');
 assert(process.env.CONFIG_YAML, 'CONFIG_YAML env var is missing');
 assert(process.env.CONFIG_TMPDIR, 'CONFIG_TMPDIR env var is missing');
 
 // load definition for the aspera transfer sdk package
 const packageDefinition = protoLoader.loadSync(
-		path.join('/',process.env.CONFIG_TRSDK_DIR_GENERIC,'connectors/transfer.proto'),
+		process.env.CONFIG_TRSDK_PROTO,
 		{keepCase : true, longs : String, enums : String, defaults : true, oneofs : true});
 const transfersdk = grpc.loadPackageDefinition(packageDefinition).transfersdk;
 // read config for examples

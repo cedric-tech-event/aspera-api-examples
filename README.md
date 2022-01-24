@@ -15,7 +15,7 @@ Code examples are provided as part of the SDK itself.
 
 1. Setup global environment: (transfer SDK) in main folder:
 
-```
+```bash
 make
 ```
 
@@ -30,13 +30,13 @@ cp config.tmpl config.yaml
 vi config.yaml
 ```
 
-Set the parameter `arch` to the architecture used (yes ... it could be auto-detected), one of:
+Set the parameter `arch` to the architecture used (yes ... it could be auto-detected), one of the folders in `sdk/trsdk`:
 
-* `osx-amd64`
-* `windows-amd64`
-* `linux-amd64`
-* `linux-s390x`
+* `windows-x86_64`
+* `osx-x86_64`
+* `linux-x86_64`
 * `linux-ppc64le`
+* `linux-s390`
 * `aix-ppc64`
 
 The parameter `sdk` selects which API will be used to start transfer, refer to section: [SDK Selection](#sdk), prefer to use `transfer`.

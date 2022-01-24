@@ -27,6 +27,7 @@ config.make: config.yaml Makefile
 	esac; echo "CONFIG_TRSDK_ARCH=$$arch" >> config.make
 	echo 'CONFIG_TRSDK_DIR_ARCH=$$(CONFIG_TRSDK_ROOT)/$$(CONFIG_TRSDK_ARCH)' >> config.make
 	echo 'CONFIG_TRSDK_DIR_GENERIC=$$(CONFIG_TRSDK_ROOT)/noarch' >> config.make
+	echo 'CONFIG_TRSDK_PROTO=$$(CONFIG_TRSDK_ROOT)/noarch/connectors/grpc/transfer.proto' >> config.make
 	echo 'CONFIG_TRSDK_CONFIG=$$(CONFIG_TRSDK_ROOT)/config.conf' >> config.make
 	echo 'CONFIG_FSMGR_DIR=$$(CONFIG_SDK_ROOT)/fspmgr' >> config.make
 # start transfer SDK daemon

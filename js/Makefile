@@ -5,7 +5,7 @@ include ../config.make
 ../config.make:
 	@echo "Run make in upper folder to create config.make"
 	@exit 1
-export CONFIG_TRSDK_DIR_GENERIC CONFIG_YAML CONFIG_TMPDIR
+export CONFIG_TRSDK_PROTO CONFIG_YAML CONFIG_TMPDIR
 setup: .is_setup
 .is_setup:
 	npm install

@@ -9,3 +9,5 @@ make startdaemon
 ```
 
 This shows logs on terminal.
+
+The gradle file builds generated java classes from the proto file.
