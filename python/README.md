@@ -69,3 +69,7 @@ Each of the sample programs are strutured like this:
 Even if property `etc` is set to other folder, it looks for aspera-license file in `etc` folder (will be fixed in next release).
 
 Transfer fails if `http_fallback` is `True`.
+
+# COS
+
+<https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-aspera>

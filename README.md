@@ -11,13 +11,15 @@ Code examples are provided as part of the SDK itself.
 
 ## Quick start
 
-1. [Create the configuration file and fill with valid server addresses and credentials](#config)
+1. [Create the configuration file config.yaml and fill with valid server addresses and credentials](#config)
 
-1. Setup global environment: (transfer SDK) in main folder:
+1. Setup global environment in main folder:
 
 ```bash
 make
 ```
+
+This downloads the SDKs and create the file `config.make`.
 
 ## <a id="config"></a>Configuration file
 
