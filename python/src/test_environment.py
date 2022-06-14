@@ -12,9 +12,6 @@ except ImportError:
 
 assert(os.environ['CONFIG_YAML'], 'env var CONFIG_YAML is missing');
 assert(os.environ['CONFIG_TMPDIR'], 'env var CONFIG_TMPDIR is missing');
-assert(os.environ['CONFIG_FSMGR_DIR'], 'env var CONFIG_FSMGR_DIR is missing');
-assert(os.environ['CONFIG_TRSDK_DIR_ARCH'], 'env var CONFIG_TRSDK_DIR_ARCH is missing');
-assert(os.environ['CONFIG_TRSDK_DIR_GENERIC'], 'env var CONFIG_TRSDK_DIR_GENERIC is missing');
 
 # set logger for debugging
 logging.basicConfig()
@@ -33,23 +30,33 @@ os.environ['PATH'] += os.environ['CONFIG_TRSDK_DIR_ARCH']
 CONFIG = yaml.load(open(os.environ['CONFIG_YAML']), Loader=yaml.FullLoader)
 
 # depending on flag, use new SDK, or old faspmanager
-if 'sdk' in CONFIG and CONFIG['sdk'] == 'faspmanager':
-    # tell where to find legacy faspmanager lib
-    sys.path.insert(1, os.environ['CONFIG_FSMGR_DIR'])
-    import helper_aspera_faspmanager
+if 'sdk' in CONFIG:
+    if CONFIG['sdk'] == 'transfer':
+        assert(os.environ['CONFIG_TRSDK_DIR_ARCH'], 'env var CONFIG_TRSDK_DIR_ARCH is missing')
+        assert(os.environ['CONFIG_TRSDK_DIR_GENERIC'], 'env var CONFIG_TRSDK_DIR_GENERIC is missing')
+        sys.path.insert(1, os.path.join(os.environ['CONFIG_TRSDK_DIR_GENERIC'], 'connectors', 'python'))
+        import helper_aspera_transfer_sdk
 
-    def start_transfer_and_wait(t_spec):
-        logging.debug(t_spec)
-        helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
+        helper_aspera_transfer_sdk.set_grpc_url(CONFIG['trsdk_url'])
 
-else:
-    sys.path.insert(1, os.path.join(os.environ['CONFIG_TRSDK_DIR_GENERIC'], 'connectors', 'python'))
-    import helper_aspera_transfer_sdk
+        def start_transfer_and_wait(t_spec):
+            # TODO: remove when transfer sdk bug fixed
+            t_spec['http_fallback'] = False
+            logging.debug(t_spec)
+            helper_aspera_transfer_sdk.start_transfer_and_wait(t_spec)
 
-    helper_aspera_transfer_sdk.set_grpc_url(CONFIG['trsdk_url'])
+    elif CONFIG['sdk'] == 'faspmanager':
+        assert(os.environ['CONFIG_FSMGR_DIR'], 'env var CONFIG_FSMGR_DIR is missing')
+        # tell where to find legacy faspmanager lib
+        sys.path.insert(1, os.environ['CONFIG_FSMGR_DIR'])
+        import helper_aspera_faspmanager
 
-    def start_transfer_and_wait(t_spec):
-        # TODO: remove when transfer sdk bug fixed
-        t_spec['http_fallback'] = False
-        logging.debug(t_spec)
-        helper_aspera_transfer_sdk.start_transfer_and_wait(t_spec)
+        def start_transfer_and_wait(t_spec):
+            logging.debug(t_spec)
+            helper_aspera_faspmanager.start_transfer_and_wait(t_spec)
+
+    else:
+        logging.debug('no transfer method')
+        def start_transfer_and_wait(t_spec):
+            logging.debug('start_transfer_and_wait not implemented')
+

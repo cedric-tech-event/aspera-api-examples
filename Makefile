@@ -22,8 +22,8 @@ config.make: config.yaml Makefile
 	echo 'CONFIG_TRSDK_ROOT=$$(CONFIG_SDK_ROOT)/trsdk' >> config.make
 	case $$(uname -s)-$$(uname -m) in\
 	  Darwin-x86_64) arch=osx-x86_64;;\
-	  Linux-x86_64) arch=todo;;\
-	  *) echo "Error: $$(uname -s)-$$(iname -m)";exit 1;;\
+	  Linux-x86_64) arch=linux-x86_64;;\
+	  *) arch=config_make_replace_architecture_from_sdk_here;echo "Cannot find architecture for $$(uname -s)-$$(iname -m). Edit config.make manually to set the value according to SDK.";;\
 	esac; echo "CONFIG_TRSDK_ARCH=$$arch" >> config.make
 	echo 'CONFIG_TRSDK_DIR_ARCH=$$(CONFIG_TRSDK_ROOT)/$$(CONFIG_TRSDK_ARCH)' >> config.make
 	echo 'CONFIG_TRSDK_DIR_GENERIC=$$(CONFIG_TRSDK_ROOT)/noarch' >> config.make
