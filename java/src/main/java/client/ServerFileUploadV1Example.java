@@ -13,8 +13,8 @@ public class ServerFileUploadV1Example {
 		// get test server address and credentials
 		final Map<String, String> server_conf = (Map<String, String>) test_environment.config.get("server");
 		final URI fasp_url = new URI(server_conf.get("url"));
-		// transfer spec version 2 (JSON)
-		final JSONObject transferSpecV2 = new JSONObject()//
+		// transfer spec version 1 (JSON)
+		final JSONObject transferSpecV1 = new JSONObject()//
 				.put("title", "server upload V1")//
 				.put("remote_host", fasp_url.getHost())//
 				.put("ssh_port", fasp_url.getPort())//
@@ -27,6 +27,6 @@ public class ServerFileUploadV1Example {
 								.put("source", "faux:///10m?10m")));
 
 		// execute transfer
-		test_environment.start_transfer_and_wait(transferSpecV2.toString());
+		test_environment.start_transfer_and_wait(transferSpecV1.toString());
 	}
 }

@@ -22,7 +22,7 @@ This downloads the SDKs and creates the file `config.make`.
 
 ## No internet access
 
-If you don't have internet access on the system, download the Transfer SDK from:
+If you don't have internet access on the system, download the Transfer SDK with a system with access from:
 
 <https://ibm.biz/aspera_transfer_sdk>
 

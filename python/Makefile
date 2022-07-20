@@ -2,30 +2,41 @@
 include ../config.make
 
 SRC=src
-TMPDIR=tmp
+TMPDIR=$(CONFIG_TMPDIR)pythontst/
 
 # environment required for the samples
 
 # used by test scripts
 export CONFIG_SDK_ROOT CONFIG_FSMGR_DIR CONFIG_TRSDK_DIR_ARCH CONFIG_TRSDK_DIR_GENERIC CONFIG_YAML CONFIG_TMPDIR
 
-all: libs
-	mkdir -p $(TMPDIR)
-	date > $(TMPDIR)/This_is_a_test.txt
-	dd of=$(TMPDIR)/1G.bin bs=1k seek=$$((1024*1024)) count=0
+all: server faspex node cos cos2 aoc
+server: .test_env
 	$(SRC)/server.py
-	$(SRC)/faspex.py $(TMPDIR)/This_is_a_test.txt
-	$(SRC)/node.py $(TMPDIR)/This_is_a_test.txt
-	$(SRC)/cos.py $(TMPDIR)/This_is_a_test.txt
-	$(SRC)/cos2.py $(TMPDIR)/This_is_a_test.txt
-	$(SRC)/aoc.py 'test package' 2 $(TMPDIR)/1G.bin
+faspex: .test_env
+	$(SRC)/faspex.py $(TMPDIR)This_is_a_test.txt
+node: .test_env
+	$(SRC)/node.py $(TMPDIR)This_is_a_test.txt
+cos: .test_env
+	$(SRC)/cos.py $(TMPDIR)This_is_a_test.txt
+cos2: .test_env
+	$(SRC)/cos2.py $(TMPDIR)This_is_a_test.txt
+aoc: .test_env
+	$(SRC)/aoc.py 'test package' 1 $(TMPDIR)This_is_a_test.txt
 $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt:
 	@echo "run make in upper folder to install transfer SDK"
 	exit 1
+.test_env: .is_installed_tmp .is_installed_libs
+tmp: .is_installed_tmp
+.is_installed_tmp:
+	mkdir -p $(TMPDIR)
+	date > $(TMPDIR)This_is_a_test.txt
+	dd of=$(TMPDIR)1G.bin bs=1k seek=$$((1024*1024)) count=0
+	touch $@
 libs: .is_installed_libs
 .is_installed_libs: .is_installed_sdk $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt
-	pip3 install -r $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt
-	pip3 install requests PyYAML pyjwt
+	#pip3 install -r $(CONFIG_TRSDK_DIR_GENERIC)/connectors/python/requirements.txt
+	pip3 install grpcio protobuf google
+	pip3 install requests PyYAML pyjwt cryptography
 	touch $@
 sdk: .is_installed_sdk
 .is_installed_sdk: 
@@ -36,6 +47,6 @@ sdk: .is_installed_sdk
 	touch $@
 # TODO: remove when transfersdk fixed: the "ln -s" is because of bug in transfer sdk: it requires "etc" even if property "etc" is set in config file
 clean:
-	rm -f .is_installed_libs .is_installed_sdk
+	rm -f .is_installed_libs .is_installed_sdk .is_installed_tmp
 	rm -fr $(TMPDIR) $(CONFIG_FSMGR_DIR)
 	find . -name __pycache__|xargs rm -fr
