@@ -37,7 +37,7 @@ public class PersistentUploadExample {
 				writer.write(String.format("Hello World %d!", seq));
 				++seq;
 				writer.close();
-				// add paths to persistent session
+				// add paths of files to transfer to persistent session
 				final Transfer.TransferPathRequest transferPathRequest =
 					Transfer.TransferPathRequest.newBuilder()
 					.setTransferId(mTestEnv.transferId)
@@ -46,8 +46,9 @@ public class PersistentUploadExample {
 						.setDestination(fileName)
 						.build())
 					.build();
-                System.out.println("T: adding transfer path");
-                mTestEnv.client.addTransferPaths(transferPathRequest);
+				System.out.println("T: adding transfer path");
+				// this will add to the transfer queue
+				mTestEnv.client.addTransferPaths(transferPathRequest);
 				System.out.println("T: end task");
 			} catch (final IOException e) {
 				System.out.println("T: ERROR: " + e.getMessage());
