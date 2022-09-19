@@ -6,10 +6,10 @@ import sys
 import os
 from urllib.parse import urlparse
 
-assert(test_environment.CONFIG['server'], 'server config is missing');
+assert 'server' in test_environment.CONFIG, 'server config is missing'
 
 server_url=urlparse(test_environment.CONFIG['server']['url'])
-assert(server_url.scheme == 'ssh', 'expecting SSH scheme');
+assert server_url.scheme == 'ssh', 'expecting SSH scheme for server URL'
 
 remote_host = server_url.hostname
 remote_port = server_url.port

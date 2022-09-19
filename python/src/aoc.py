@@ -114,7 +114,7 @@ response.raise_for_status()
 node_info = response.json()
 logging.debug(node_info)
 
-# tell Aspera what to expect in package: 1 transfer (can also be done after transfer)
+# tell Aspera how many transfers to expect in package (can also be done after transfer)
 response = requests.put(AOC_API_BASE + "packages/%s" % package_info['id'], headers=request_headers,
                         json={'sent': True, 'transfers_expected': transfer_sessions})
 response.raise_for_status()

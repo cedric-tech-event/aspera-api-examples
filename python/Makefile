@@ -1,5 +1,5 @@
 # run make in upper folder to generate this file
-include ../config.make
+include ../config.mak
 
 SRC=src
 TMPDIR=$(CONFIG_TMPDIR)pythontst/
@@ -8,6 +8,10 @@ TMPDIR=$(CONFIG_TMPDIR)pythontst/
 
 # used by test scripts
 export CONFIG_SDK_ROOT CONFIG_FSMGR_DIR CONFIG_TRSDK_DIR_ARCH CONFIG_TRSDK_DIR_GENERIC CONFIG_YAML CONFIG_TMPDIR
+
+# avoid incompatibility of version
+PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
+export PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION
 
 all: server faspex node cos cos2 aoc
 server: .test_env

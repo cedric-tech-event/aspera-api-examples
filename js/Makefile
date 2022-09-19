@@ -1,9 +1,9 @@
 # test file to transfer, here generated file, but could be real file with a path
 FILE_TRANSFER=faux:///100m?100m
 all: run
-include ../config.make
-../config.make:
-	@echo "Run make in upper folder to create config.make"
+include ../config.mak
+../config.mak:
+	@echo "Run make in upper folder to create config.mak"
 	@exit 1
 export CONFIG_TRSDK_PROTO CONFIG_YAML CONFIG_TMPDIR
 setup: .is_setup
