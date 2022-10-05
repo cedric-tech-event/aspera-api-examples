@@ -71,9 +71,12 @@ Example (with random credentials):
 
 ```yaml
 ---
-  arch: osx-amd64
-  sdk: transfer
-  trsdk_url: grpc://127.0.0.1:55002
+  misc:
+    system_type: osx-amd64
+    client_sdk: transfer_sdk
+    trsdk_url: grpc://127.0.0.1:55002
+    httpgw_url: https://1.2.3.4/aspera/http-gwy
+    server_file: /aspera-test-dir-small/10MB.1
   server:
     user: aspera
     pass: demoaspera

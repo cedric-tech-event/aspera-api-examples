@@ -50,7 +50,7 @@ To start transfers, sample code uses either:
 
 In both cases, sample code uses the transfer spec structure, refer to API reference in Transfer SDK.
 
-Use of one or the other is controlled by the configuration parameter: `sdk`, set to either `transfer` or `faspmanager`
+Use of one or the other is controlled by the configuration parameter: `sdk`, set to either `transfer_sdk` or `faspmanager`
 
 # Structure of examples
 

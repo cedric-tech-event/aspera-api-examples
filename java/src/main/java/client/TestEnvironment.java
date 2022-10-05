@@ -14,7 +14,7 @@ import java.util.Iterator;
 // read configuration file and provide interface for transfer
 public class TestEnvironment {
 	// config filer loaded from yaml
-	public Map<String, Object> config;
+	public Map<String, Map<String, String>> config;
 	// Aspera client
 	public TransferServiceGrpc.TransferServiceBlockingStub client;
 	// several transfer session may be startedm but for the example we use only one
@@ -35,7 +35,7 @@ public class TestEnvironment {
 			throw new Error(e.getMessage());
 		}
 		try {
-			final URI grpc_url = new URI(config.get("trsdk_url").toString());
+			final URI grpc_url = new URI(config.get("misc").get("trsdk_url"));
 			// create channel to socket
 			final ManagedChannel channel = ManagedChannelBuilder.forAddress(grpc_url.getHost(), grpc_url.getPort()).usePlaintext().build();
 			// create a connection to the transfer sdk daemon

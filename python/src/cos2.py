@@ -6,7 +6,7 @@ import logging
 import json
 import sys
 
-if test_environment.CONFIG['sdk'] != "transfer":
+if test_environment.CONFIG['sdk'] != "transfer_sdk":
     raise Exception('Example only for transfer SDK using transfer spec v2')
 
 # get file to upload from command line
