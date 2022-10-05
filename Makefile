@@ -7,7 +7,7 @@ clean:
 	cd python && make clean
 	cd java && make clean
 	rm -f .is_setup $(CONFIG_TRSDK_CONFIG)
-	rm -fr $(CONFIG_TRSDK_ROOT)
+	rm -fr $(CONFIG_SDK_ROOT)
 	rm -f $(CONFIG_MK) config.env
 # transfer SDK is installed
 .is_setup: config.env $(CONFIG_TRSDK_DIR_ARCH)/asperatransferd $(CONFIG_TRSDK_CONFIG) $(CONFIG_SDK_ROOT)/aspera_ssh_bypass_rsa.pem
