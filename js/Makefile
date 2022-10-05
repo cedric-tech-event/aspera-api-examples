@@ -15,4 +15,4 @@ run: .is_setup
 	node server_v2.js '$(FILE_TRANSFER)'
 clean:
 	rm -f .is_setup package-lock.json file
-	rm -fr node_modules
+	rm -fr node_modules tmp
