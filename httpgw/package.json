@@ -1,0 +1,10 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "node --trace-warnings server.js ../config.yaml"
+  },
+  "dependencies": {
+    "express": "^4.17.2",
+    "js-yaml": "^4.1.0"
+  }
+}
