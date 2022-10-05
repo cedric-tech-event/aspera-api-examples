@@ -1,21 +1,27 @@
 # Simple examples for Aspera HTTP Gateway
 
-[Refer to the SDK doc here](https://developer.ibm.com/apis/catalog?search=%22aspera%20http%22)
+[Refer to the HTTP GW SDK doc here](https://developer.ibm.com/apis/catalog?search=%22aspera%20http%22)
 
-## setup
+## Configuration
 
-Install nodeJS, and then install packages with:
+The example use these values from the config file:
 
-```bash
-make install
+```yaml
+  misc:
+    httpgw_url: https://mygw.example.com/aspera/http-gwy
+    server_file: /aspera-test-dir-small/10MB.1
+  node:
+    user: node_user
+    pass: pass_here
+    url: https://server.example.com
 ```
 
-# use
+## Setup and Run
 
-First start the web server:
+Install nodeJS, and then install packages and run the server with:
 
 ```bash
-make run
+make
 ```
 
 Then open a browser to:
