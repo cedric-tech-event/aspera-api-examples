@@ -4,7 +4,7 @@
 
 ## Configuration
 
-The example use these values from the config file:
+The example use these values from the config file (`../config.yaml`):
 
 ```yaml
   misc:
