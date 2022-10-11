@@ -10,7 +10,7 @@ node_modules:
 conf.js: ../config.yaml node_modules
 	node convert.js ../config.yaml > $@
 all:: node_modules dist/http-gateway.js conf.js
-	npm start
+	node --trace-warnings server.js ../config.yaml 3000
 clean:
 	rm -f package-lock.json conf.js
 	rm -f aspera-httpgw-example.zip

@@ -1,23 +1,29 @@
+// sample server application
+// provides one endpoint: /tspec
+// called with two parameters: operation and files
+// returns an transfer spec suitable to start a transfer
+
 const bodyParser = require("body-parser");
 const express = require('express');
 const https = require('https');
 const yaml = require('js-yaml');
 const fs = require('fs');
 
-// get node credentials from config file
-const config=yaml.load(fs.readFileSync(process.argv[2], 'utf8'));
-// prepare basic auth
-const basic_auth = 'Basic '+Buffer.from(config.node.user+':'+config.node.pass).toString('base64');
+// command line arguments
+const configFile=process.argv[2];
+const port = Number(process.argv[3]);
+
+// read config file (node credentials ...) 
+const config=yaml.load(fs.readFileSync(configFile, 'utf8'));
 // for demo, assume self signed cert
 const ignoreCertAgent = new https.Agent({rejectUnauthorized: false});
-
+// web server
 const app = express();
-const port = 3000;
 
-// use this source folder as doc root
+// use this source folder to serve static content
 app.use(express.static(__dirname));
 
-// parse JSON bodies
+// allow parsing of JSON bodies
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -25,7 +31,7 @@ app.use(bodyParser.json());
 app.post('/tspec', async (req, res) => {
   // requested path for authorization
   var request_paths=null;
-  // which files to transfer (for sample: 1 fie only)
+  // which files to transfer (for sample: 1 file only)
   var source_paths=[{"source":req.body.files[0]}];
   if (req.body.operation === "upload") {
     // for sample: server chooses destination
@@ -37,14 +43,15 @@ app.post('/tspec', async (req, res) => {
     return;
   }
   console.log("request:",req.body.operation);
+  // call HSTS node API (with a single transfer request)
   const ts_resp = await fetch(config.node.url+`/files/${req.body.operation}_setup`, {
     method: 'POST',
-    headers: {"Authorization" : basic_auth},
+    headers: {"Authorization" : 'Basic '+Buffer.from(config.node.user+':'+config.node.pass).toString('base64')},
     body: JSON.stringify({"transfer_requests":[{"transfer_request":{"paths":request_paths}}]}),
     agent: ignoreCertAgent
   });
   // wait for full answer
-  var result = await ts_resp.json();
+  const result = await ts_resp.json();
   // one request was made, so one answer is received
   var transfer_spec = result["transfer_specs"][0]["transfer_spec"];
   // set paths to transfer
