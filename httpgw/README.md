@@ -10,6 +10,7 @@ The example use these values from the config file (`../config.yaml`):
   misc:
     httpgw_url: https://mygw.example.com/aspera/http-gwy
     server_file: /aspera-test-dir-small/10MB.1
+    server_folder: /Upload
   node:
     user: node_user
     pass: pass_here
