@@ -18,15 +18,21 @@
         </nav>
       </div>
     </header>
-    Using <span id="server_address"></span>
+    <section class="content">
+      <h2>Server</h2>
+      <p>Using <span id="server_address"></span></p>
+    </section>
     <section class="content">
       <h2>Download example</h2>
       <p>This example shows how to download a single file to the user's default downloads directory.</p>
+      <p>File: <span id="download_file"></span></p>
       <button onclick="httpgw_download();">Download File</button>
     </section>
     <section class="content">
       <h2>Upload example</h2>
       <p>This example shows how to upload files.</p>
+      <p>Folder: <span id="upload_folder"></span></p>
+      <p>Files: <span id="upload_files"></span></p>
       <button onclick="httpgw_pick_files('send-panel');">Select Files</button>
       <button onclick="httpgw_upload('send-panel');">Upload Files</button>
     </section>

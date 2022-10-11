@@ -2,7 +2,8 @@ body {
   margin: 0;
 }
 
-body, button {
+body,
+button {
   font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
@@ -65,4 +66,3 @@ button {
 #results {
   margin-top: 25px;
 }
-

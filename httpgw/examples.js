@@ -1,20 +1,23 @@
-// sample client-side web application
+// sample client web application
 
 // files selected by user for upload
 var selected_upload_files;
-// transfer monitor
+// upload monitor
 var monitorId;
 
 // helper function
 function readableBytes(bytes) {
-    var i = Math.floor(Math.log(bytes) / Math.log(1024)),
-        sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + sizes[i];
+    const magnitude = Math.floor(Math.log(bytes) / Math.log(1024));
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    return (bytes / Math.pow(1024, magnitude)).toFixed(2) * 1 + ' ' + sizes[magnitude];
 }
+
 // to be called when page is ready
 function httpgw_initialize() {
     // display configuration
     document.getElementById("server_address").innerHTML = config.node.url + " / " + config.node.user;
+    document.getElementById("download_file").innerHTML = config.misc.server_file;
+    document.getElementById("upload_folder").innerHTML = config.misc.server_folder;
     asperaHttpGateway.initHttpGateway(config.misc.httpgw_url + '/v1').then(response => {
         console.log('HTTP Gateway SDK started', response);
         // register a transfer monitor
@@ -73,11 +76,13 @@ function httpgw_download() {
 // called by file select button
 function httpgw_pick_files(formId) {
     asperaHttpGateway.getFilesForUpload((pick) => {
+        // for the sample: a new select deletes already selected files
         selected_upload_files = [];
         for (const file of pick.dataTransfer.files) {
             selected_upload_files.push(file.name);
         }
         console.log('Files picked', selected_upload_files);
+        document.getElementById("upload_files").innerHTML = selected_upload_files.join(", ");
     }, formId);
 }
 
@@ -95,6 +100,7 @@ function httpgw_upload(formId) {
                     alert("Prolem with HTTPGW:" + error.message);
                 });
             // reset
-            selected_upload_files = [];
+            selected_upload_files = undefined;
+            document.getElementById("upload_files").innerHTML = "";
         });
 }
