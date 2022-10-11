@@ -77,23 +77,24 @@ Example (with random credentials):
     trsdk_url: grpc://127.0.0.1:55002
     httpgw_url: https://1.2.3.4/aspera/http-gwy
     server_file: /aspera-test-dir-small/10MB.1
+    server_folder: /Upload
   server:
     user: aspera
     pass: demoaspera
     url: ssh://demo.asperasoft.com:33001
   faspex:
     url: https://faspex.example.com/aspera/faspex
-    user: laurent
-    pass: Sup3rS3cR3T!
+    user: faxpex_user
+    pass: _the_us3r_p4ss_
   node:
     url: https://node.example.com:9092
-    user: node_aspera
-    pass: Sup3rS3cR3T!
+    user: node_user
+    pass: _the_us3r_p4ss_
   cos:
     endpoint: https://s3.eu-de.cloud-object-storage.appdomain.cloud
     bucket: mybucket
-    key: FADSFds4324FDSAD25342FAsdfs-54FDFD54UAFtw8
-    crn: 'crn:v1:bluemix:public:cloud-object-storage:global:a/4343hj4hj3h43jhj43hj:h3j2h3j2-5029-34jk-af65-hj43hj43hj43hj::'
+    key: _the_key_here_
+    crn: 'crn:v1:bluemix:public:cloud-object-storage:global:_the_crn_::'
     auth: https://iam.cloud.ibm.com/identity/token
   coscreds:
     bucket: mybucket
@@ -101,8 +102,8 @@ Example (with random credentials):
     region: eu-de
   aoc:
     org: acme
-    user_email: laurent.martin.aspera@fr.ibm.com
-    private_key_path: /Users/laurent/.aspera/ascli/my_aoc_key
+    user_email: john@example.com
+    private_key_path: /path/to/my_aoc_key
     client_id: aspera.global-cli-client
     client_secret: frpmsRsG4mjZ0PlxCgdJlvONqBg4Vlpz_IX7gXmBMAfsgMLy2FO6CXLodKfKAuhqnCqSptLbe_wdmnm9JRuEPO-PpFqpq_Kb
     workspace: Default
