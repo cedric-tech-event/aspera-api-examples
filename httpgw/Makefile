@@ -1,12 +1,4 @@
-# old way to get SDK:
-#	curl -o current_sdk.zip https://developer.ibm.com/caas-storage/skillscollection/apie-next/dev/API--aspera--http-gateway-api/en/_attachments/ibm-aspera-httpgateway-sdk-6.1.2-f1c6b4d.zip
-#	unzip current_sdk.zip 'dist/*'
-#	mv dist/js/http-gateway.* .
-#	rm -fr dist current_sdk.zip
-
-# Set to 1 to validate cert, and to 0 to ignore cert
-NODE_TLS_REJECT_UNAUTHORIZED=0
-export NODE_TLS_REJECT_UNAUTHORIZED
+# run make to start server
 all::
 dist/http-gateway.js:
 	mkdir -p dist

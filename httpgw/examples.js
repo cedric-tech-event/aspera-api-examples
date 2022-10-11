@@ -1,6 +1,5 @@
-// Demo server with demo credentials
-// Note: we use here a Basic token for the simplicity
-// Normally an application-generated token should be used
+// sample client-side web application
+
 // files selected by user for upload
 var selected_upload_files=[];
 // transfer monitor
@@ -14,6 +13,7 @@ function readableBytes(bytes) {
 }
 // to be called when page is ready
 function httpgw_initialize() {
+    // display configuration
     document.getElementById("server_address").innerHTML = config.node.url + " / " + config.node.user;
     asperaHttpGateway.initHttpGateway(config.misc.httpgw_url+'/v1').then(response => {
         console.log('HTTP Gateway SDK started', response);
@@ -37,10 +37,14 @@ function httpgw_initialize() {
 // call the server to get a transfer authorization (with token)
 function httpgw_get_ts(direction,files) {
     return new Promise((resolve) => {
-        fetch(window.location.href+'tspec?dir='+direction)
+        // get transfer spec from server
+        fetch(window.location.href+'tspec',{
+            method: 'POST',
+            headers: {"Content-Type":"application/json"},
+            body: JSON.stringify({"operation":direction,"files":files})
+        })
         .then((response)=>{return response.json();})
         .then((ts)=>{
-            ts.paths=files;
             ts.authentication="token";
             //ts.download_name="project_files"
             //ts.zip_required=true;
@@ -48,10 +52,11 @@ function httpgw_get_ts(direction,files) {
         });
     });
 }
+
 // called by download button
 function httpgw_download() {
     console.log('Download asked');
-    httpgw_get_ts("receive",[{"source":config.misc.server_file}])
+    httpgw_get_ts("download",[config.misc.server_file])
     .then((transferSpec)=>{
         console.log('>>transfer spec',transferSpec);
         asperaHttpGateway.download(transferSpec).then(response => {
@@ -62,18 +67,20 @@ function httpgw_download() {
         });
     });
 }
+
 // called by file select button
 function httpgw_pick_files(formId) {
     asperaHttpGateway.getFilesForUpload((pick) => {
         for (let file of pick.dataTransfer.files) {
-            selected_upload_files.push({"source":file.name});
+            selected_upload_files.push(file.name);
         }
         console.log('Files picked', selected_upload_files);
     }, formId);
 }
+
 // called by upload button
 function httpgw_upload(formId) {
-    httpgw_get_ts("send",selected_upload_files)
+    httpgw_get_ts("upload",selected_upload_files)
     .then((transferSpec)=>{
         asperaHttpGateway.upload(transferSpec, formId)
         .then(response => {
