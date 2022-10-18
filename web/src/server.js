@@ -12,6 +12,7 @@ const fs = require('fs');
 // command line arguments
 const configFile = process.argv[2];
 const port = Number(process.argv[3]);
+const staticFolder = process.argv[4];
 
 // read config file (node credentials ...) 
 const config = yaml.load(fs.readFileSync(configFile, 'utf8'));
@@ -21,7 +22,7 @@ const ignoreCertAgent = new https.Agent({ rejectUnauthorized: false });
 const app = express();
 
 // use this source folder to serve static content
-app.use(express.static(__dirname));
+app.use(express.static(staticFolder));
 
 // allow parsing of JSON bodies
 app.use(bodyParser.urlencoded({ extended: false }));

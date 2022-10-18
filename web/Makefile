@@ -8,9 +8,10 @@ dist/http-gateway.js:
 node_modules:
 	npm install
 conf.js: ../config.yaml node_modules
-	node convert.js ../config.yaml > $@
+	node script/convert.js ../config.yaml > $@
 all:: node_modules dist/http-gateway.js conf.js
-	node --trace-warnings server.js ../config.yaml 3000
+	node --trace-warnings src/server.js ../config.yaml 3000 .
+	@echo "open "
 clean:
 	rm -f package-lock.json conf.js
 	rm -f aspera-httpgw-example.zip

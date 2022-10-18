@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>IBM Aspera HTTP GW Samples</title>
-    <link rel="tab icon" href="favicon.ico" />
-    <link rel="stylesheet" href="styles.css">
+    <title>IBM Aspera Web Samples</title>
+    <link rel="tab icon" href="static/favicon.ico"/>
+    <link rel="stylesheet" href="static/styles.css"/>
     <script src="dist/http-gateway.js"></script>
-    <script src="examples.js"></script>
+    <script src="src/httpgw_sample.js"></script>
+    <script src="src/connect_sample.js"></script>
     <script src="conf.js"></script>
+    <script src="https://d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
   </head>
-  <body onload="httpgw_initialize();">
+  <body onload="httpgw_initialize();connect_initialize();">
     <header>
       <div class="content">
         <nav>
@@ -23,18 +25,24 @@
       <p>Using <span id="server_address"></span></p>
     </section>
     <section class="content">
-      <h2>Download example</h2>
-      <p>This example shows how to download a single file to the user's default downloads directory.</p>
+      <h2>HTTP GW Download</h2>
+      <p>This example shows how to download a single file using HTTP GW.</p>
       <p>File: <span id="download_file"></span></p>
       <button onclick="httpgw_download();">Download File</button>
     </section>
     <section class="content">
-      <h2>Upload example</h2>
+      <h2>HTTP GW Upload example</h2>
       <p>This example shows how to upload files.</p>
       <p>Folder: <span id="upload_folder"></span></p>
       <p>Files: <span id="upload_files"></span></p>
       <button onclick="httpgw_pick_files('send-panel');">Select Files</button>
       <button onclick="httpgw_upload('send-panel');">Upload Files</button>
+    </section>
+    <section class="content">
+      <h2>Connect Download example</h2>
+      <p>This example shows how to download a single file using Connect.</p>
+      <button onclick="connect_download_simple()">Download File (SSH credentials)</button>
+      <button onclick="connect_download_basic()">Download File (Node credentials)</button>
     </section>
     <section class="content">
       <h2>Transfer Status</h2>
