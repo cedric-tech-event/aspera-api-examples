@@ -41,9 +41,14 @@ function httpgw_initialize() {
 
 // call the server to get a transfer authorization (with token)
 function httpgw_get_ts(direction, files) {
+    const server_url=window.location.href;
+    if (!server_url.startsWith('http://')) {
+        alert("This page must be loaded through http server");
+        throw "This page must be loaded through http server";
+    }
     return new Promise((resolve) => {
         // get transfer spec from server
-        fetch(window.location.href + 'tspec', {
+        fetch(server_url + 'tspec', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation: direction, files: files })
