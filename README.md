@@ -127,7 +127,7 @@ Or, it is also possible to use:
 
 * bucket name
 * region
-* service credentials: create the file `private/service_creds.json`, follow: [get service credentials](https://www.rubydoc.info/gems/asperalm#ibm-cloud-object-storage)
+* service credentials: create the file `private/service_creds.json`, follow: [get service credentials](https://www.rubydoc.info/gems/aspera-cli#using-service-credential-file)
 
 Uncomment lines in `cos.py` to use service credential file instead of bare api key.
 
