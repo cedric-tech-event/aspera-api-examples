@@ -75,21 +75,22 @@ Example (with random credentials):
     system_type: osx-amd64
     client_sdk: transfer_sdk
     trsdk_url: grpc://127.0.0.1:55002
-    httpgw_url: https://1.2.3.4/aspera/http-gwy
-    server_file: /aspera-test-dir-small/10MB.1
-    server_folder: /Upload
+  httpgw:
+    url: https://1.2.3.4/aspera/http-gwy
   server:
     user: aspera
     pass: demoaspera
     url: ssh://demo.asperasoft.com:33001
+    download_file: /aspera-test-dir-small/10MB.1
+    upload_folder: /Upload
   faspex:
     url: https://faspex.example.com/aspera/faspex
     user: faxpex_user
-    pass: _the_us3r_p4ss_
+    pass: _the_password_here_
   node:
     url: https://node.example.com:9092
     user: node_user
-    pass: _the_us3r_p4ss_
+    pass: _the_password_here_
   cos:
     endpoint: https://s3.eu-de.cloud-object-storage.appdomain.cloud
     bucket: mybucket

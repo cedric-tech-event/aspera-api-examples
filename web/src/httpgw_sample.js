@@ -15,10 +15,10 @@ function readableBytes(bytes) {
 // to be called when page is ready
 function httpgw_initialize() {
     // display configuration
-    document.getElementById("server_address").innerHTML = config.node.url + " / " + config.node.user;
-    document.getElementById("download_file").innerHTML = config.misc.server_file;
-    document.getElementById("upload_folder").innerHTML = config.misc.server_folder;
-    asperaHttpGateway.initHttpGateway(config.misc.httpgw_url + '/v1').then(response => {
+    document.getElementById('server_address').innerHTML = config.node.url + ' / ' + config.node.user;
+    document.getElementById('download_file').innerHTML = config.server.download_file;
+    document.getElementById('upload_folder').innerHTML = config.server.upload_folder;
+    asperaHttpGateway.initHttpGateway(config.httpgw.url + '/v1').then(response => {
         console.log('HTTP Gateway SDK started', response);
         // register a transfer monitor
         monitorId = asperaHttpGateway.registerActivityCallback((result) => {
@@ -30,12 +30,12 @@ function httpgw_initialize() {
     - Data Sent:  ${readableBytes(transfer.bytes_written)},
     - Data Total: ${readableBytes(transfer.bytes_expected)}`;
                 console.log(status);
-                document.getElementById("status").innerHTML = status;
+                document.getElementById('status').innerHTML = status;
             });
         });
     }).catch(error => {
         console.error('HTTP Gateway SDK did not start', error);
-        alert("Prolem with HTTPGW:" + error.message);
+        alert('Prolem with HTTPGW:' + error.message);
     });
 }
 
@@ -45,13 +45,13 @@ function httpgw_get_ts(direction, files) {
         // get transfer spec from server
         fetch(window.location.href + 'tspec', {
             method: 'POST',
-            headers: { "Content-Type": "application/json" },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation: direction, files: files })
         })
             .then((response) => { return response.json(); })
             .then((ts) => {
-                ts.authentication = "token";
-                //ts.download_name="project_files"
+                ts.authentication = 'token';
+                //ts.download_name='project_files'
                 //ts.zip_required=true;
                 resolve(ts);
             });
@@ -61,14 +61,14 @@ function httpgw_get_ts(direction, files) {
 // called by download button
 function httpgw_download() {
     console.log('Download asked');
-    httpgw_get_ts("download", [config.misc.server_file])
+    httpgw_get_ts('download', [config.misc.server_file])
         .then((transferSpec) => {
             console.log('>>transfer spec', transferSpec);
             asperaHttpGateway.download(transferSpec).then(response => {
                 console.log('Download started', response);
             }).catch(error => {
                 console.log('Download could not start', error);
-                alert("Prolem with HTTPGW:" + error.message);
+                alert('Prolem with HTTPGW:' + error.message);
             });
         });
 }
@@ -82,13 +82,13 @@ function httpgw_pick_files(formId) {
             selected_upload_files.push(file.name);
         }
         console.log('Files picked', selected_upload_files);
-        document.getElementById("upload_files").innerHTML = selected_upload_files.join(", ");
+        document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ');
     }, formId);
 }
 
 // called by upload button
 function httpgw_upload(formId) {
-    httpgw_get_ts("upload", selected_upload_files)
+    httpgw_get_ts('upload', selected_upload_files)
         .then((transferSpec) => {
             asperaHttpGateway.upload(transferSpec, formId)
                 .then(response => {
@@ -97,10 +97,10 @@ function httpgw_upload(formId) {
                 }).catch(error => {
                     // Indicates upload could not start (this is a failure from the SDK or the Gateway Server, not from the transfer server)
                     console.log('Upload could not start', error);
-                    alert("Prolem with HTTPGW:" + error.message);
+                    alert('Prolem with HTTPGW:' + error.message);
                 });
             // reset
             selected_upload_files = undefined;
-            document.getElementById("upload_files").innerHTML = "";
+            document.getElementById('upload_files').innerHTML = '';
         });
 }
