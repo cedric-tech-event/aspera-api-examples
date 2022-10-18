@@ -6,7 +6,7 @@ clean:
 	cd js && make clean
 	cd python && make clean
 	cd java && make clean
-	cd httpgw && make clean
+	cd web && make clean
 	rm -f .is_setup $(CONFIG_TRSDK_CONFIG)
 	rm -fr $(CONFIG_SDK_ROOT)
 	rm -f $(CONFIG_MK) config.env

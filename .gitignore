@@ -18,4 +18,4 @@ local
 .vscode
 .idea
 dist/
-httpgw/conf.js
+web/conf.js
