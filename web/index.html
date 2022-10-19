@@ -25,7 +25,7 @@
         <input type="checkbox" id="use_connect" checked>
         <span class="labels" data-on="Connect" data-off="HTTPGW"></span>
       </label></p><p><span id="httpgw_info">URL: <input type="text" id="httpgw_url"></span></p>
-      <p>Node: <label class="toggle">
+      <p>Node(token): <label class="toggle">
         <input type="checkbox" id="use_server">
         <span class="labels" data-on="Web Server" data-off="Direct"></span>
       </label></p><span id="node_info">
@@ -33,13 +33,18 @@
       <p>User: <input type="text" id="node_user"></p>
       <p>Pass: <input type="password" id="node_pass"></p>
       </span>
+      <span id="server_info">Server(SSH): 
+        <p>URL: <input type="text" id="server_url"/></p>
+        <p>User: <input type="text" id="server_user"/></p>
+        <p>Pass: <input type="password" id="server_pass"/></p>
+        </span>
     </section>
     <section class="content">
       <h2>Download</h2>
       <p>File: <input type="text" id="download_file"></p>
-      <button onclick="app_download_with_token();">Download File (Aspera token)</button>
-      <button onclick="app_download_with_token(true);">Download File (Basic token)</button>
-      <button onclick="app_download_ssh_creds();">Download File (SSH credentials)</button>
+      <button onclick="app_download_with_token();">With Aspera token</button>
+      <button onclick="app_download_with_token(true);">With Basic token</button>
+      <button onclick="app_download_ssh_creds();" id="server_download">With SSH credentials</button>
     </section>
     <section class="content">
       <h2>Upload</h2>

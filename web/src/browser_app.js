@@ -24,8 +24,8 @@ function app_getTransferSpec(params) {
         // @return transfer spec with token by calling the local express server
         const server_url = window.location.href;
         if (!server_url.startsWith('http://')) {
-            alert('This page must be loaded through http server');
-            throw 'This page must be loaded through http server';
+            alert('Cannot detect server URL if page is loaded from file');
+            throw 'Cannot detect server URL if page is loaded from file';
         }
         return new Promise((resolve) => {
             // get transfer spec from server
@@ -80,15 +80,20 @@ function app_resetSelection() {
 function app_updateUi() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ');
     document.getElementById('node_info').style.display = document.getElementById('use_server').checked ? 'none' : 'block';
-    document.getElementById('httpgw_info').style.display = document.getElementById('use_connect').checked ? 'none' : 'block';
     if (document.getElementById('use_connect').checked) {
         // connect
+        document.getElementById('httpgw_info').style.display = 'none';
+        document.getElementById('server_download').style.display = 'block';
+        document.getElementById('server_info').style.display = 'block';
         if (!this.client) {
             this.client = new AW4.Connect();
             this.client.initSession();
         }
     } else {
         // http gw
+        document.getElementById('httpgw_info').style.display = 'block';
+        document.getElementById('server_download').style.display = 'none';
+        document.getElementById('server_info').style.display = 'none';
         if (!httpGwMonitorId) {
             asperaHttpGateway.initHttpGateway(document.getElementById('httpgw_url').value + '/v1').then(response => {
                 console.log('HTTP Gateway SDK started', response);
@@ -119,33 +124,37 @@ function app_initialize() {
     document.getElementById('node_url').value = config.node.url;
     document.getElementById('node_user').value = config.node.user;
     document.getElementById('node_pass').value = config.node.pass;
+    document.getElementById('server_url').value = config.server.url;
+    document.getElementById('server_user').value = config.server.user;
+    document.getElementById('server_pass').value = config.server.pass;
     document.getElementById('download_file').value = config.server.download_file;
     document.getElementById('upload_folder').value = config.server.upload_folder;
+
     document.getElementById('use_connect').addEventListener('click', function () { app_updateUi(); });
     document.getElementById('use_server').addEventListener('click', function () { app_updateUi(); });
     app_updateUi();
 }
 
 function app_download_ssh_creds() {
-    // replace ssh, as browser will not take ssh:
-    const serverUrl = new URL(config.server.url.replace(/^ssh:/g, 'http://'));
+    // replace ssh, as browser will not parse "ssh:""
+    const serverUrl = new URL(document.getElementById('server_url').value.replace(/^ssh:/g, 'http://'));
+    // build 
     const transferSpec = {
         remote_host: serverUrl.hostname,
         ssh_port: serverUrl.port,
-        remote_user: config.server.user,
-        remote_password: config.server.pass,
+        remote_user: document.getElementById('server_user').value,
+        remote_password: document.getElementById('server_pass').value,
         direction: 'receive',
-        paths: [{ source: config.server.download_file }]
+        paths: [{ source: document.getElementById('download_file').value }]
     };
     console.log(`Transfer requested: download`);
-    console.log('With ts=', transferSpec);
     app_startTransfer(transferSpec);
 }
 
 function app_download_with_token(use_basic) {
     app_getTransferSpec({ operation: 'download', sources: [document.getElementById('download_file').value] })
         .then((transferSpec) => {
-            if (use_basic) { transferSpec.token = 'Basic ' + btoa(config.node.user + ':' + config.node.pass) }
+            if (use_basic) { transferSpec.token = 'Basic ' + btoa(document.getElementById('node_user').value + ':' + document.getElementById('node_pass').value) }
             app_startTransfer(transferSpec);
         });
 }
