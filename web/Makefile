@@ -10,7 +10,7 @@ node_modules:
 conf.js: ../config.yaml node_modules
 	node script/convert.js ../config.yaml > $@
 all:: node_modules dist/http-gateway.js conf.js
-	node --trace-warnings src/server.js ../config.yaml 3000 .
+	PATH="/opt/homebrew/bin:$$PATH" node --trace-warnings src/server.js ../config.yaml 3000 .
 	@echo "open "
 clean:
 	rm -f package-lock.json conf.js

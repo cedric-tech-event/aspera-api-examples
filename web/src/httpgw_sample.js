@@ -5,14 +5,7 @@ var selected_upload_files;
 // upload monitor
 var monitorId;
 
-// helper function
-function readableBytes(bytes) {
-    const magnitude = Math.floor(Math.log(bytes) / Math.log(1024));
-    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    return (bytes / Math.pow(1024, magnitude)).toFixed(2) * 1 + ' ' + sizes[magnitude];
-}
-
-// to be called when page is ready
+// called when page is ready
 function httpgw_initialize() {
     // display configuration
     document.getElementById('server_address').innerHTML = config.node.url + ' / ' + config.node.user;
@@ -27,8 +20,8 @@ function httpgw_initialize() {
     - Id:         ${transfer.uuid},
     - Status:     ${transfer.status},
     - Percent:    ${(transfer.percentage * 100).toFixed(2)}%,
-    - Data Sent:  ${readableBytes(transfer.bytes_written)},
-    - Data Total: ${readableBytes(transfer.bytes_expected)}`;
+    - Data Sent:  ${common.readableBytes(transfer.bytes_written)},
+    - Data Total: ${common.readableBytes(transfer.bytes_expected)}`;
                 console.log(status);
                 document.getElementById('status').innerHTML = status;
             });
@@ -39,41 +32,20 @@ function httpgw_initialize() {
     });
 }
 
-// call the server to get a transfer authorization (with token)
-function httpgw_get_ts(direction, files) {
-    const server_url=window.location.href;
-    if (!server_url.startsWith('http://')) {
-        alert("This page must be loaded through http server");
-        throw "This page must be loaded through http server";
-    }
-    return new Promise((resolve) => {
-        // get transfer spec from server
-        fetch(server_url + 'tspec', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ operation: direction, files: files })
-        })
-            .then((response) => { return response.json(); })
-            .then((ts) => {
-                ts.authentication = 'token';
-                //ts.download_name='project_files'
-                //ts.zip_required=true;
-                resolve(ts);
-            });
-    });
-}
+// transfer spec specific to http gw
+//ts.download_name='project_files'
+//ts.zip_required=true;
 
 // called by download button
 function httpgw_download() {
     console.log('Download asked');
-    httpgw_get_ts('download', [config.misc.server_file])
+    common_browser.get_transfer_spec({ operation: 'download', sources: [config.server.download_file] })
         .then((transferSpec) => {
-            console.log('>>transfer spec', transferSpec);
+            console.log('With ts=', transferSpec);
             asperaHttpGateway.download(transferSpec).then(response => {
-                console.log('Download started', response);
             }).catch(error => {
                 console.log('Download could not start', error);
-                alert('Prolem with HTTPGW:' + error.message);
+                alert(`Prolem with HTTPGW: ${error.message}`);
             });
         });
 }
@@ -93,8 +65,10 @@ function httpgw_pick_files(formId) {
 
 // called by upload button
 function httpgw_upload(formId) {
-    httpgw_get_ts('upload', selected_upload_files)
+    console.log('Upload asked');
+    common_browser.get_transfer_spec({ operation: 'upload', sources: selected_upload_files, destination: config.server.upload_folder })
         .then((transferSpec) => {
+            console.log('With ts=', transferSpec);
             asperaHttpGateway.upload(transferSpec, formId)
                 .then(response => {
                     // Indicates upload started; transfer status is shown in activity callbacks

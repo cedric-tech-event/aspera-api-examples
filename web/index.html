@@ -4,11 +4,13 @@
     <title>IBM Aspera Web Samples</title>
     <link rel="tab icon" href="static/favicon.ico"/>
     <link rel="stylesheet" href="static/styles.css"/>
+    <script src="https://d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
     <script src="dist/http-gateway.js"></script>
+    <script src="conf.js"></script>
+    <script src="src/common.js"></script>
+    <script src="src/common_browser.js"></script>
     <script src="src/httpgw_sample.js"></script>
     <script src="src/connect_sample.js"></script>
-    <script src="conf.js"></script>
-    <script src="https://d3gcli72yxqn2z.cloudfront.net/connect/v4/asperaweb-4.min.js"></script>
   </head>
   <body onload="httpgw_initialize();connect_initialize();">
     <header>
@@ -41,9 +43,9 @@
     <section class="content">
       <h2>Connect Download example</h2>
       <p>This example shows how to download a single file using Connect.</p>
-      <button onclick="connect_download_ssh_creds()">Download File (SSH credentials)</button>
-      <button onclick="connect_download_basic_token()">Download File (Basic token)</button>
-      <button onclick="connect_download_aspera_token()">Download File (Aspera token)</button>
+      <button onclick="connect_download_ssh_creds();">Download File (SSH credentials)</button>
+      <button onclick="connect_download_with_token();">Download File (Aspera token)</button>
+      <button onclick="connect_download_with_token(true);">Download File (Basic token)</button>
     </section>
     <section class="content">
       <h2>Transfer Status</h2>
