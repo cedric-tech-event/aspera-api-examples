@@ -4,6 +4,8 @@
 var selected_upload_files = [];
 // upload monitor
 var httpGwMonitorId;
+// identifier used by httpgw sdk
+const httpGwFormId = 'send-panel';
 
 // @return the provided number with bytes qualifier
 function readableBytes(bytes) {
@@ -22,8 +24,8 @@ function get_transfer_spec(params) {
         // @return transfer spec with token by calling the local express server
         const server_url = window.location.href;
         if (!server_url.startsWith('http://')) {
-            alert("This page must be loaded through http server");
-            throw "This page must be loaded through http server";
+            alert('This page must be loaded through http server');
+            throw 'This page must be loaded through http server';
         }
         return new Promise((resolve) => {
             // get transfer spec from server
@@ -55,7 +57,7 @@ function start_transfer(transferSpec) {
                 alert(`Problem with HTTPGW: ${error.message}`);
             });
         } else {
-            asperaHttpGateway.upload(transferSpec, 'httpgw-form')
+            asperaHttpGateway.upload(transferSpec, httpGwFormId)
                 .then(response => {
                     // Indicates upload started; transfer status is shown in activity callbacks
                     console.log('Upload started', response);
@@ -74,7 +76,7 @@ function reset_selected_files() {
     update_ui();
 }
 
-// updat e dynamic elements in UI
+// update dynamic elements in UI
 function update_ui() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ');
     document.getElementById('node_info').style.display = document.getElementById('use_server').checked ? 'none' : 'block';
@@ -105,7 +107,7 @@ function update_ui() {
                 });
             }).catch(error => {
                 console.error('HTTP Gateway SDK did not start', error);
-                alert('Prolem with HTTPGW:' + error.message);
+                alert('Problem with HTTPGW:' + error.message);
             });
         }
     }
@@ -119,8 +121,8 @@ function app_initialize() {
     document.getElementById('node_pass').value = config.node.pass;
     document.getElementById('download_file').value = config.server.download_file;
     document.getElementById('upload_folder').value = config.server.upload_folder;
-    document.getElementById('use_connect').addEventListener("click", function () { update_ui(); });
-    document.getElementById('use_server').addEventListener("click", function () { update_ui(); });
+    document.getElementById('use_connect').addEventListener('click', function () { update_ui(); });
+    document.getElementById('use_server').addEventListener('click', function () { update_ui(); });
     update_ui();
 }
 
@@ -151,7 +153,7 @@ function app_download_with_token(use_basic) {
 // called by file select button
 function app_pick_files() {
     if (document.getElementById('use_connect').checked) {
-        alert("NOT IMPLEMENTED: Use HTTP gw")
+        alert('NOT IMPLEMENTED: Use HTTP gw')
     } else {
         // for the sample: a new select deletes already selected files
         reset_selected_files();
@@ -161,13 +163,12 @@ function app_pick_files() {
             }
             console.log('Files picked', selected_upload_files);
             update_ui();
-        }, 'send-panel');
+        }, httpGwFormId);
     }
 }
 
 // called by upload button
-function app_upload(formId) {
-    console.log('Upload asked');
+function app_upload(httpGwFormId) {
     get_transfer_spec({ operation: 'upload', sources: selected_upload_files, destination: document.getElementById('upload_folder').value })
         .then((transferSpec) => {
             start_transfer(transferSpec);
