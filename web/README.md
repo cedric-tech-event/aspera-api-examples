@@ -18,6 +18,9 @@ The example use these values from the config file (`../config.yaml`):
 httpgw:
   url: https://mygw.example.com/aspera/http-gwy
 server:
+    url: ssh://eudemo.asperademo.com:33001
+    user: _server_user_here_
+    pass: _server_pass_here_
     download_file: /aspera-test-dir-small/10MB.1
     upload_folder: /Upload
 node:
@@ -26,7 +29,7 @@ node:
     pass: _node_pass_here_
 ```
 
-This YAML will generate the equivalent file <conf.js> .
+This YAML will generate the equivalent file <conf.js> which is used by the server and to populate the client default values.
 
 ## Setup and Run
 
