@@ -7,8 +7,8 @@ var httpGwMonitorId;
 // identifier used by httpgw sdk
 const httpGwFormId = 'send-panel';
 
-// @return the provided number with bytes qualifier
-function readableBytes(bytes) {
+// @return the provided number with magnitude qualifier
+function app_readableBytes(bytes) {
     const magnitude = Math.floor(Math.log(bytes) / Math.log(1024));
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     return (bytes / Math.pow(1024, magnitude)).toFixed(2) * 1 + ' ' + sizes[magnitude];
@@ -16,7 +16,7 @@ function readableBytes(bytes) {
 
 // get transfer spec for specified transfer type and files
 // either call directly the node api, or call the web server who will forward to node
-function get_transfer_spec(params) {
+function app_getTransferSpec(params) {
     console.log(`Transfer requested: ${params.operation}`);
     if (!document.getElementById('use_server').checked) {
         return common.get_transfer_spec_direct(params);
@@ -42,7 +42,7 @@ function get_transfer_spec(params) {
 
 // start transfer for specified transfer type and files
 // using either connect SDK or HTTP HW SDK
-function start_transfer(transferSpec) {
+function app_startTransfer(transferSpec) {
     console.log('With ts=', transferSpec);
     if (document.getElementById('use_connect').checked) {
         this.client.startTransfer(transferSpec);
@@ -71,13 +71,13 @@ function start_transfer(transferSpec) {
 }
 
 // reset
-function reset_selected_files() {
+function app_resetSelection() {
     selected_upload_files = [];
-    update_ui();
+    app_updateUi();
 }
 
 // update dynamic elements in UI
-function update_ui() {
+function app_updateUi() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ');
     document.getElementById('node_info').style.display = document.getElementById('use_server').checked ? 'none' : 'block';
     document.getElementById('httpgw_info').style.display = document.getElementById('use_connect').checked ? 'none' : 'block';
@@ -99,8 +99,8 @@ function update_ui() {
     - Id:         ${transfer.uuid},
     - Status:     ${transfer.status},
     - Percent:    ${(transfer.percentage * 100).toFixed(2)}%,
-    - Data Sent:  ${readableBytes(transfer.bytes_written)},
-    - Data Total: ${readableBytes(transfer.bytes_expected)}`;
+    - Data Sent:  ${app_readableBytes(transfer.bytes_written)},
+    - Data Total: ${app_readableBytes(transfer.bytes_expected)}`;
                         console.log(status);
                         document.getElementById('status').innerHTML = status;
                     });
@@ -121,9 +121,9 @@ function app_initialize() {
     document.getElementById('node_pass').value = config.node.pass;
     document.getElementById('download_file').value = config.server.download_file;
     document.getElementById('upload_folder').value = config.server.upload_folder;
-    document.getElementById('use_connect').addEventListener('click', function () { update_ui(); });
-    document.getElementById('use_server').addEventListener('click', function () { update_ui(); });
-    update_ui();
+    document.getElementById('use_connect').addEventListener('click', function () { app_updateUi(); });
+    document.getElementById('use_server').addEventListener('click', function () { app_updateUi(); });
+    app_updateUi();
 }
 
 function app_download_ssh_creds() {
@@ -139,39 +139,43 @@ function app_download_ssh_creds() {
     };
     console.log(`Transfer requested: download`);
     console.log('With ts=', transferSpec);
-    start_transfer(transferSpec);
+    app_startTransfer(transferSpec);
 }
 
 function app_download_with_token(use_basic) {
-    get_transfer_spec({ operation: 'download', sources: [document.getElementById('download_file').value] })
+    app_getTransferSpec({ operation: 'download', sources: [document.getElementById('download_file').value] })
         .then((transferSpec) => {
             if (use_basic) { transferSpec.token = 'Basic ' + btoa(config.node.user + ':' + config.node.pass) }
-            start_transfer(transferSpec);
+            app_startTransfer(transferSpec);
         });
+}
+
+function app_storeFileNames(selection) {
+    for (const file of selection.dataTransfer.files) {
+        selected_upload_files.push(file.name);
+    }
+    console.log('Files picked', selected_upload_files);
+    app_updateUi();
 }
 
 // called by file select button
 function app_pick_files() {
+    // for the sample: a new select deletes already selected files
+    app_resetSelection();
     if (document.getElementById('use_connect').checked) {
-        alert('NOT IMPLEMENTED: Use HTTP gw')
+        this.client.showSelectFileDialogPromise({ allowMultipleSelection: false })
+            .then((selection) => { app_storeFileNames(selection); })
+            .catch(() => { console.error('Unable to select files'); });
     } else {
-        // for the sample: a new select deletes already selected files
-        reset_selected_files();
-        asperaHttpGateway.getFilesForUpload((pick) => {
-            for (const file of pick.dataTransfer.files) {
-                selected_upload_files.push(file.name);
-            }
-            console.log('Files picked', selected_upload_files);
-            update_ui();
-        }, httpGwFormId);
+        asperaHttpGateway.getFilesForUpload((selection) => { app_storeFileNames(selection); }, httpGwFormId);
     }
 }
 
 // called by upload button
 function app_upload(httpGwFormId) {
-    get_transfer_spec({ operation: 'upload', sources: selected_upload_files, destination: document.getElementById('upload_folder').value })
+    app_getTransferSpec({ operation: 'upload', sources: selected_upload_files, destination: document.getElementById('upload_folder').value })
         .then((transferSpec) => {
-            start_transfer(transferSpec);
-            reset_selected_files();
+            app_startTransfer(transferSpec);
+            app_resetSelection();
         });
 }
