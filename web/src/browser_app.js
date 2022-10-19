@@ -76,6 +76,19 @@ function app_resetSelection() {
     app_updateUi();
 }
 
+function handleTransferEvents(transfers) {
+    transfers.forEach(transfer => {
+        const status = `Event:
+    - Id:         ${transfer.uuid},
+    - Status:     ${transfer.status},
+    - Percent:    ${(transfer.percentage * 100).toFixed(2)}%,
+    - Data Sent:  ${app_readableBytes(transfer.bytes_written)},
+    - Data Total: ${app_readableBytes(transfer.bytes_expected)}`;
+        console.log(status);
+        document.getElementById('status').innerHTML = status;
+    });
+}
+
 // update dynamic elements in UI
 function app_updateUi() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ');
@@ -88,6 +101,7 @@ function app_updateUi() {
         if (!this.client) {
             this.client = new AW4.Connect();
             this.client.initSession();
+            this.client.addEventListener(AW4.Connect.EVENT.TRANSFER, (type, data) => { handleTransferEvents(data.transfers); });
         }
     } else {
         // http gw
@@ -98,18 +112,7 @@ function app_updateUi() {
             asperaHttpGateway.initHttpGateway(document.getElementById('httpgw_url').value + '/v1').then(response => {
                 console.log('HTTP Gateway SDK started', response);
                 // register a transfer monitor
-                httpGwMonitorId = asperaHttpGateway.registerActivityCallback((result) => {
-                    result.transfers.forEach(transfer => {
-                        const status = `Event:
-    - Id:         ${transfer.uuid},
-    - Status:     ${transfer.status},
-    - Percent:    ${(transfer.percentage * 100).toFixed(2)}%,
-    - Data Sent:  ${app_readableBytes(transfer.bytes_written)},
-    - Data Total: ${app_readableBytes(transfer.bytes_expected)}`;
-                        console.log(status);
-                        document.getElementById('status').innerHTML = status;
-                    });
-                });
+                httpGwMonitorId = asperaHttpGateway.registerActivityCallback((result) => { handleTransferEvents(result.transfers); });
             }).catch(error => {
                 console.error('HTTP Gateway SDK did not start', error);
                 alert('Problem with HTTPGW:' + error.message);
