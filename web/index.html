@@ -8,44 +8,45 @@
     <script src="dist/http-gateway.js"></script>
     <script src="conf.js"></script>
     <script src="src/common.js"></script>
-    <script src="src/common_browser.js"></script>
-    <script src="src/httpgw_sample.js"></script>
-    <script src="src/connect_sample.js"></script>
+    <script src="src/browser_app.js"></script>
   </head>
-  <body onload="httpgw_initialize();connect_initialize();">
+  <body onload="app_initialize();">
     <header>
       <div class="content">
         <nav>
           <a href="/">
-            <h1>IBM Aspera HTTP GW Samples</h1>
+            <h1>IBM Aspera Web Samples</h1>
           </a>
         </nav>
       </div>
     </header>
     <section class="content">
-      <h2>Server</h2>
-      <p>Using <span id="server_address"></span></p>
+      <p>Transfer Agent: <label class="toggle">
+        <input type="checkbox" id="use_connect" checked>
+        <span class="labels" data-on="Connect" data-off="HTTPGW"></span>
+      </label></p><p><span id="httpgw_info">URL: <input type="text" id="httpgw_url"></span></p>
+      <p>Node: <label class="toggle">
+        <input type="checkbox" id="use_server">
+        <span class="labels" data-on="Web Server" data-off="Direct"></span>
+      </label></p><span id="node_info">
+      <p>URL: <input type="text" id="node_url"></p>
+      <p>User: <input type="text" id="node_user"></p>
+      <p>Pass: <input type="password" id="node_pass"></p>
+      </span>
     </section>
     <section class="content">
-      <h2>HTTP GW Download</h2>
-      <p>This example shows how to download a single file using HTTP GW.</p>
-      <p>File: <span id="download_file"></span></p>
-      <button onclick="httpgw_download();">Download File</button>
+      <h2>Download</h2>
+      <p>File: <input type="text" id="download_file"></p>
+      <button onclick="app_download_with_token();">Download File (Aspera token)</button>
+      <button onclick="app_download_with_token(true);">Download File (Basic token)</button>
+      <button onclick="app_download_ssh_creds();">Download File (SSH credentials)</button>
     </section>
     <section class="content">
-      <h2>HTTP GW Upload example</h2>
-      <p>This example shows how to upload files.</p>
-      <p>Folder: <span id="upload_folder"></span></p>
-      <p>Files: <span id="upload_files"></span></p>
-      <button onclick="httpgw_pick_files('send-panel');">Select Files</button>
-      <button onclick="httpgw_upload('send-panel');">Upload Files</button>
-    </section>
-    <section class="content">
-      <h2>Connect Download example</h2>
-      <p>This example shows how to download a single file using Connect.</p>
-      <button onclick="connect_download_ssh_creds();">Download File (SSH credentials)</button>
-      <button onclick="connect_download_with_token();">Download File (Aspera token)</button>
-      <button onclick="connect_download_with_token(true);">Download File (Basic token)</button>
+      <h2>Upload</h2>
+      <p>Destination Folder: <input type="text" id="upload_folder"></p>
+      <p>Selected Files: <span id="upload_files"></span></p>
+      <button onclick="app_pick_files();">Select Files</button>
+      <button onclick="app_upload();">Upload Files</button>
     </section>
     <section class="content">
       <h2>Transfer Status</h2>

@@ -1,12 +1,5 @@
 // compatible to both browser and nodejs
 var common = {
-    // @return the provided number with bytes qualifier
-    readableBytes: function (bytes) {
-        const magnitude = Math.floor(Math.log(bytes) / Math.log(1024));
-        const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-        return (bytes / Math.pow(1024, magnitude)).toFixed(2) * 1 + ' ' + sizes[magnitude];
-    },
-
     // @return transfer spec with token by calling the node api on HSTS
     get_transfer_spec_direct: function (params) {
         console.log('params:', params);
