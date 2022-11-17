@@ -1,14 +1,21 @@
-# Simple example for Aspera based transfers in web app
+# Aspera transfers in web app using Connect and HTTP Gateway
 
-[All Aspera APIs here](https://developer.ibm.com/apis/catalog?search=aspera)
+This application shows how to start a file transfer in a web browser using both the Aspera Connect SDK and Aspera HTTP Gateway SDK.
+
+In both case, starting a transfer consists in building a "transfer spec".
+
+In this example, the transfer spec is build either for a direct transfer to a server or using node API.
+
+This sample application gives the choice to contact the node api either directly from the browser or through a local web server (express).
+
+## References
 
 [Refer to the Aspera HTTP GW SDK doc here](https://developer.ibm.com/apis/catalog?search=%22aspera%20http%22)
 
 [Refer to the Aspera Connect SDK doc here](https://developer.ibm.com/apis/catalog?search=%22aspera%20connect%22)
 
-This application gives the choice to contact the node api either directly from the browser or through the express web server.
+[All Aspera APIs here](https://developer.ibm.com/apis/catalog?search=aspera)
 
-It is also possible to select transfer via httpgw or through connect,
 
 ## Configuration
 
@@ -43,4 +50,4 @@ Then open a browser to:
 
 <http://localhost:3000>
 
-The application can also be used as opened as file in browser, in that case 
+The application can also be used as opened as file in browser, in that case simply open the file [index.html](index.html) located in your local clone of this repo in a browser.
