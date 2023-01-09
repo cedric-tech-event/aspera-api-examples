@@ -19,13 +19,13 @@ def set_grpc_url(url):
 def start_transfer_and_wait(transfer_spec):
     global sdk_grpc_url
     assert sdk_grpc_url is not None, 'call set_grpc_url to set grpc url'
-    grpc_url = urlparse(sdk_grpc_url)
+    # avoid message: Other threads are currently calling into gRPC, skipping fork() handlers
+    os.environ['GRPC_ENABLE_FORK_SUPPORT'] = 'false'
     # create a connection to the transfer manager daemon
+    grpc_url = urlparse(sdk_grpc_url)
     channel = grpc.insecure_channel(
         grpc_url.hostname + ':' + str(grpc_url.port))
     aspera = None
-    # avoid message: Other threads are currently calling into gRPC, skipping fork() handlers
-    os.environ['GRPC_ENABLE_FORK_SUPPORT'] = 'false'
     # try to start daemon a few times if needed
     for i in range(0, 2):
         try:
