@@ -28,9 +28,9 @@ const transferSpecV2 = {
 	},
 	assets: {
 		destination_root: '/Upload',
-		paths: files.map((file)=>{return {source: file};})
+		paths: files.map((file) => { return { source: file }; })
 	}
 };
 
-test_environment.wait_for_server(()=>{test_environment.start_transfer_and_wait(transferSpecV2,()=>{console.log('Done!')});})
+test_environment.wait_for_server(() => { test_environment.start_transfer_and_wait(transferSpecV2, () => { console.log('Done!') }); })
 

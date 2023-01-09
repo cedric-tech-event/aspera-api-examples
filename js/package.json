@@ -1,8 +1,7 @@
 {
   "name": "sample",
   "version": "1.0.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@grpc/proto-loader": "^0.5.4",
     "@grpc/grpc-js": "^1.5.0",

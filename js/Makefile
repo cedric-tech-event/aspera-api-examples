@@ -3,7 +3,7 @@ FILE_TRANSFER=faux:///100m?100m
 all: run
 include ../config.mak
 ../config.mak:
-	@echo "Run make in upper folder to create config.mak"
+	@echo "Run make in upper folder to create the file: ../config.mak"
 	@exit 1
 export CONFIG_TRSDK_PROTO CONFIG_YAML CONFIG_TMPDIR
 setup: .is_setup

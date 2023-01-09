@@ -45,7 +45,7 @@ TransferSDK (Legacy) versus FaspManager (Current)
 
 To start transfers, sample code uses either:
 
-* The current [Transfer SDK](https://developer.ibm.com/apis/catalog?search=%22aspera%20transfer%20sdk%22) which is recommended for new developments.
+* The current [Transfer SDK](https://developer.ibm.com/apis/catalog?search=%22aspera%20transfer%20sdk%22) which is **recommended** for new developments.
 * Or the legacy [FASPManager API](https://developer.ibm.com/apis/catalog?search=%22fasp%20manager%20sdk%22) together with a helper method that translates the **transfer_spec** into the Legacy FaspManager structure.
 
 In both cases, sample code uses the transfer spec structure, refer to API reference in Transfer SDK.
@@ -66,10 +66,10 @@ Each of the sample programs are strutured like this:
 
 # Known Transfer SDK Issues
 
-Even if property `etc` is set to other folder, it looks for aspera-license file in `etc` folder (will be fixed in next release).
+Even if property `etc` is set to other folder, it looks for `aspera-license` file in `etc` folder (will be fixed in next release).
 
 Transfer fails if `http_fallback` is `True`.
 
-# COS
+# COS official documentation for Aspera SDK
 
 <https://cloud.ibm.com/docs/cloud-object-storage?topic=cloud-object-storage-aspera>
