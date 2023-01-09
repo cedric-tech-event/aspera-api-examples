@@ -13,7 +13,6 @@ sdk_grpc_url = None
 
 def set_grpc_url(url):
     global sdk_grpc_url
-    print("Hello")
     sdk_grpc_url = url
 
 
@@ -25,6 +24,8 @@ def start_transfer_and_wait(transfer_spec):
     channel = grpc.insecure_channel(
         grpc_url.hostname + ':' + str(grpc_url.port))
     aspera = None
+    # avoid message: Other threads are currently calling into gRPC, skipping fork() handlers
+    os.environ['GRPC_ENABLE_FORK_SUPPORT'] = 'false'
     # try to start daemon a few times if needed
     for i in range(0, 2):
         try:
@@ -62,13 +63,11 @@ def start_transfer_and_wait(transfer_spec):
             print('stdout: '+out_file)
             process = subprocess.run(' '.join(command) + '>' + out_file + ' 2>' +
                                      err_file + ' &', shell=True, capture_output=True, check=True)
-            time.sleep(3)
-            # go back in loop
-            continue
-        # success, so finish retry loop
-        break
+            time.sleep(1)
+        if aspera is not None:
+            break
     if aspera is None:
-        print("ERROR: daemon not started or cannot be started. Check the logs: stderr and stdout.")
+        print("ERROR: daemon not started or cannot be started. Check the logs: daemon.err and daemon.out.")
         exit(1)
     # create a transfer request
     transfer_request = transfer_manager.TransferRequest(
