@@ -5,28 +5,34 @@ import time
 import json
 import os
 import subprocess
-#from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 from urllib.parse import urlparse
 
 sdk_grpc_url = None
 
+
 def set_grpc_url(url):
     global sdk_grpc_url
     print("Hello")
-    sdk_grpc_url=url
+    sdk_grpc_url = url
+
 
 def start_transfer_and_wait(transfer_spec):
     global sdk_grpc_url
     assert sdk_grpc_url is not None, 'call set_grpc_url to set grpc url'
-    grpc_url=urlparse(sdk_grpc_url)
+    grpc_url = urlparse(sdk_grpc_url)
     # create a connection to the transfer manager daemon
-    channel = grpc.insecure_channel(grpc_url.hostname + ':' + str(grpc_url.port))
+    channel = grpc.insecure_channel(
+        grpc_url.hostname + ':' + str(grpc_url.port))
+    aspera = None
     # try to start daemon a few times if needed
     for i in range(0, 2):
         try:
             print('Checking gRPC connection')
             grpc.channel_ready_future(channel).result(timeout=3)
             print('SUCCESS: connected')
+            # channel is ok, let's get the stub
+            aspera = transfer_manager_grpc.TransferServiceStub(channel)
         except grpc.FutureTimeoutError:
             print('FAILED: trying to start daemon')
             # else prepare config and start
@@ -37,8 +43,8 @@ def start_transfer_and_wait(transfer_spec):
                 'fasp_runtime': {
                     'use_embedded': False,
                     'user_defined': {
-                        'bin':bin_folder,
-                        'etc':os.environ['CONFIG_TRSDK_DIR_GENERIC'],
+                        'bin': bin_folder,
+                        'etc': os.environ['CONFIG_TRSDK_DIR_GENERIC'],
                     }
                 }
             }
@@ -46,20 +52,24 @@ def start_transfer_and_wait(transfer_spec):
             conf_file = tmp_file_base + '.conf'
             with open(conf_file, 'w') as the_file:
                 the_file.write(json.dumps(config))
-            command = [os.path.join(bin_folder, 'asperatransferd'), '--config' , conf_file]
+            command = [os.path.join(
+                bin_folder, 'asperatransferd'), '--config', conf_file]
             out_file = tmp_file_base + '.out'
             err_file = tmp_file_base + '.err'
             time.sleep(1)
             print('Starting: '+' '.join(command))
             print('stderr: '+err_file)
             print('stdout: '+out_file)
-            process = subprocess.run(' '.join(command) + '>' + out_file + ' 2>' + err_file +' &', shell=True, capture_output=True, check=True)
+            process = subprocess.run(' '.join(command) + '>' + out_file + ' 2>' +
+                                     err_file + ' &', shell=True, capture_output=True, check=True)
             time.sleep(3)
             # go back in loop
             continue
+        # success, so finish retry loop
         break
-    # channel is ok, let's get the stub
-    aspera = transfer_manager_grpc.TransferServiceStub(channel)
+    if aspera is None:
+        print("ERROR: daemon not started or cannot be started. Check the logs: stderr and stdout.")
+        exit(1)
     # create a transfer request
     transfer_request = transfer_manager.TransferRequest(
         transferType=transfer_manager.FILE_REGULAR,
@@ -78,7 +88,8 @@ def start_transfer_and_wait(transfer_spec):
                 filters=[transfer_manager.RegistrationFilter(
                     transferId=[transfer_id]
                 )])):
-        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>\ntransfer info {0}".format(transfer_info))
+        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>\ntransfer info {0}".format(
+            transfer_info))
         # check transfer status in response, and exit if it's done
         status = transfer_info.status
         # exit on first success or failure

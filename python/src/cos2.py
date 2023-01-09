@@ -22,12 +22,12 @@ config = test_environment.CONFIG['cos']
 
 # prepare transfer spec v2 for COS
 t_spec = {
-    'title':'send to COS using tsv2',
-    'direction':'send',
-    'assets':{
-        'destination_root':destination_folder,
+    'title': 'send to COS using tsv2',
+    'direction': 'send',
+    'assets': {
+        'destination_root': destination_folder,
     },
-    'session_initiation':{
+    'session_initiation': {
         'icos': {
             'api_key': config['key'],
             'bucket': config['bucket'],
@@ -40,7 +40,7 @@ t_spec = {
 # add file list in transfer spec
 t_spec['assets']['paths'] = []
 for f in files_to_upload:
-    t_spec['assets']['paths'].append({'source':f})
+    t_spec['assets']['paths'].append({'source': f})
 
 # start transfer, using Transfer SDK
 test_environment.start_transfer_and_wait(t_spec)

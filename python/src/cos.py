@@ -9,26 +9,28 @@ import sys
 
 # get file to upload from command line
 files_to_upload = sys.argv[1:]
-destination_folder='/'
+destination_folder = '/'
 
 # get Aspera Transfer Service Node information using service credential file
-#config=test_environment.CONFIG['coscreds']
-#with open(config['service_credential_file']) as f:
+# config=test_environment.CONFIG['coscreds']
+# with open(config['service_credential_file']) as f:
 #    credentials = json.load(f)
-#info=helper_aspera_cos.from_service_credentials(credentials=credentials,region=config['region'])
-#node_info=helper_aspera_cos.node(bucket=config['bucket'],endpoint=info['endpoint'],key=info['key'],crn=info['crn'])
+# info=helper_aspera_cos.from_service_credentials(credentials=credentials,region=config['region'])
+# node_info=helper_aspera_cos.node(bucket=config['bucket'],endpoint=info['endpoint'],key=info['key'],crn=info['crn'])
 
 # get Aspera Transfer Service Node information for specified COS bucket
-config=test_environment.CONFIG['cos']
-node_info=helper_aspera_cos.node(bucket=config['bucket'],endpoint=config['endpoint'],key=config['key'],crn=config['crn'],auth=config['auth'])
+config = test_environment.CONFIG['cos']
+node_info = helper_aspera_cos.node(
+    bucket=config['bucket'], endpoint=config['endpoint'], key=config['key'], crn=config['crn'], auth=config['auth'])
 
 # prepare node API request for upload_setup
-upload_setup_request = {'transfer_requests':[{'transfer_request':{'paths':[{'destination':destination_folder}]}}]}
+upload_setup_request = {'transfer_requests': [
+    {'transfer_request': {'paths': [{'destination': destination_folder}]}}]}
 
-request_headers={
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-    }
+request_headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+}
 
 request_headers.update(node_info['headers'])
 
@@ -52,7 +54,7 @@ t_spec.update(node_info['tspec'])
 # add file list in transfer spec
 t_spec['paths'] = []
 for f in files_to_upload:
-    t_spec['paths'].append({'source':f})
+    t_spec['paths'].append({'source': f})
 
 # start transfer
 test_environment.start_transfer_and_wait(t_spec)
