@@ -60,7 +60,7 @@ $(CONFIG_TRSDK_DIR_ARCH)/asperatransferd: $(CONFIG_TRSDK_ROOT)/transfer_sdk.zip
 	touch $@
 # create template from actual private config file
 template: config.yaml
-	sed 's/^\(    [^:]*:\).*/\1 your_value_here/' < config.yaml > config.tmpl
+	sed '/^#/ d;s/^\(    [^:]*:\).*/\1 your_value_here/' < config.yaml > config.tmpl
 config.yaml:
 	@echo "Create a file: $@ from config.tmpl, see manual"
 	@exit 1
