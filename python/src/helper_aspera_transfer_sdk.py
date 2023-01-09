@@ -1,6 +1,7 @@
 import transfer_pb2 as transfer_manager
 import transfer_pb2_grpc as transfer_manager_grpc
 import grpc
+import time
 import json
 import os
 import subprocess
@@ -25,6 +26,7 @@ def start_transfer_and_wait(transfer_spec):
         try:
             print('Checking gRPC connection')
             grpc.channel_ready_future(channel).result(timeout=3)
+            print('SUCCESS: connected')
         except grpc.FutureTimeoutError:
             print('FAILED: trying to start daemon')
             # else prepare config and start
@@ -40,14 +42,21 @@ def start_transfer_and_wait(transfer_spec):
                     }
                 }
             }
-            conf_file = os.path.join(os.environ['TMPDIR'], 'sdk.conf')
-            log_base = os.path.join(os.environ['TMPDIR'], 'daemon')
+            tmp_file_base = os.path.join(os.environ['TMPDIR'], 'daemon')
+            conf_file = tmp_file_base + '.conf'
             with open(conf_file, 'w') as the_file:
                 the_file.write(json.dumps(config))
             command = [os.path.join(bin_folder, 'asperatransferd'), '--config' , conf_file]
-            process = subprocess.run(' '.join(command) + '>' + log_base + '.out 2>' + log_base + '.err &', shell=True, capture_output=True, check=True)
+            out_file = tmp_file_base + '.out'
+            err_file = tmp_file_base + '.err'
+            time.sleep(1)
+            print('Starting: '+' '.join(command))
+            print('stderr: '+err_file)
+            print('stdout: '+out_file)
+            process = subprocess.run(' '.join(command) + '>' + out_file + ' 2>' + err_file +' &', shell=True, capture_output=True, check=True)
+            time.sleep(3)
+            # go back in loop
             continue
-        print('SUCCESS')
         break
     # channel is ok, let's get the stub
     aspera = transfer_manager_grpc.TransferServiceStub(channel)
@@ -58,6 +67,9 @@ def start_transfer_and_wait(transfer_spec):
         transferSpec=json.dumps(transfer_spec))
     # send start transfer request to transfer manager daemon
     transfer_response = aspera.StartTransfer(transfer_request)
+    if 4 == transfer_response.status:
+        print("ERROR: {0}".format(transfer_response.error.description))
+        exit(1)
     transfer_id = transfer_response.transferId
     print('transfer started with id {0}'.format(transfer_id))
     # monitor transfer status

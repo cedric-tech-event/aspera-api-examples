@@ -10,8 +10,9 @@ except ImportError:
     # Python 2
     import httplib as http_client
 
-assert 'CONFIG_YAML' in os.environ, 'env var CONFIG_YAML is missing'
-assert 'CONFIG_TMPDIR' in os.environ, 'env var CONFIG_TMPDIR is missing'
+# If the sample script is started individually, set env vars by executing: . ../../config.env
+assert 'CONFIG_YAML' in os.environ, 'env var CONFIG_YAML is missing. To load environment execute: . ../../config.env'
+assert 'CONFIG_TMPDIR' in os.environ, 'env var CONFIG_TMPDIR is missing. To load environment execute: . ../../config.env'
 
 # set logger for debugging
 logging.basicConfig()
