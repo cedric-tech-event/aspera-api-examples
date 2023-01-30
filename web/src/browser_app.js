@@ -4,8 +4,44 @@
 var selected_upload_files = [];
 // upload monitor
 var httpGwMonitorId;
+// connect installer
+//var connect_installer;
 // identifier used by httpgw sdk
 const httpGwFormId = 'send-panel';
+
+// initializes Aspera Connect: check if extension and client are installed, else ask to install
+function app_initialize_connect() {
+    var connect_object = new AW4.Connect({
+        minVersion: '4.2.0',
+        connectMethod: 'extension'
+    });
+    // get Connect from CDN
+    connect_installer = new AW4.ConnectInstaller({
+        sdkLocation: '//d3gcli72yxqn2z.cloudfront.net/downloads/connect/latest',
+        style: 'carbon',
+        correlationId: 'testapp'
+    });
+    connect_object.addEventListener(AW4.Connect.EVENT.STATUS, function (eventType, data) {
+        if (data == AW4.Connect.STATUS.INITIALIZING) {
+            connect_installer.showLaunching();
+        } else if (data == AW4.Connect.STATUS.FAILED) {
+            connect_installer.showDownload();
+        } else if (data == AW4.Connect.STATUS.OUTDATED) {
+            connect_installer.showUpdate();
+        } else if (data == AW4.Connect.STATUS.RUNNING) {
+            connect_installer.connected();
+            // Make sure we can use Connect API after we're told it's running.
+            connect_object.version({
+                success: function (version) { console.log('version returned:', version); },
+                error: function () { console.log('version error'); }
+            });
+        } else if (data == AW4.Connect.STATUS.EXTENSION_INSTALL) {
+            connect_installer.showExtensionInstall();
+        }
+    });
+    connect_object.initSession();
+    return connect_object;
+}
 
 // @return the provided number with magnitude qualifier
 function app_readableBytes(bytes) {
@@ -99,8 +135,8 @@ function app_updateUi() {
         document.getElementById('server_download').style.display = 'block';
         document.getElementById('server_info').style.display = 'block';
         if (!this.client) {
-            this.client = new AW4.Connect();
-            this.client.initSession();
+            this.client = app_initialize_connect();
+            // optionally for the sample: follow transfer progress in page
             this.client.addEventListener(AW4.Connect.EVENT.TRANSFER, (type, data) => { handleTransferEvents(data.transfers); });
         }
     } else {
@@ -139,7 +175,7 @@ function app_initialize() {
 }
 
 function app_download_ssh_creds() {
-    // replace ssh, as browser will not parse "ssh:""
+    // replace ssh, as browser will not parse ssh as scheme
     const serverUrl = new URL(document.getElementById('server_url').value.replace(/^ssh:/g, 'http://'));
     // build 
     const transferSpec = {
