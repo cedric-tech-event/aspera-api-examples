@@ -1,26 +1,31 @@
 // sample client web application
+// See reference: https://ibm.github.io/aspera-connect-sdk-js/
 
 // files selected by user for upload
 var selected_upload_files = []
 // HTTPGW upload monitor, initialized when HTTPGW is accessible
 var httpGwMonitorId
-// Connect Version, set when connect is accessible
-var connectVersion = 'Unknown'
 // identifier used by HTTPGW SDK
 const HTTPGW_FORM_ID = 'send-panel'
 // location of Connect SDK in CDN
-const CONNECT_SDK_LOCATION = '//d3gcli72yxqn2z.cloudfront.net/downloads/connect/latest'
+const CONNECT_SDK_CDN_LOCATION = '//d3gcli72yxqn2z.cloudfront.net/downloads/connect/latest'
+
+// UI feedback on error
+function app_error(message) {
+    console.error(`ERROR: ${message}`)
+    alert(`ERROR: ${message}`)
+}
 
 // initializes Aspera Connect: check if extension and client are installed, else ask to install
-// See reference: https://ibm.github.io/aspera-connect-sdk-js/
 function app_initialize_connect() {
+    // object to interact with connect
     var connect_object = new AW4.Connect({
         minVersion: '4.2.0',
         connectMethod: 'extension'
     })
-    // get Connect from CDN
-    connect_installer = new AW4.ConnectInstaller({
-        sdkLocation: CONNECT_SDK_LOCATION,
+    // object to propose installation of Connect, in case it is not detected
+    var connect_installer = new AW4.ConnectInstaller({
+        sdkLocation: CONNECT_SDK_CDN_LOCATION,
         style: 'carbon',
         correlationId: 'testapp'
     })
@@ -39,8 +44,8 @@ function app_initialize_connect() {
             connect_installer.connected()
             // (optional) Update UI with Connect version, that also validates that communication works
             connect_object.version({
-                success: (info) => { app_updateClientVersion(`Connect Version ${info.version}`) },
-                error: () => { app_updateClientVersion('Cannot get connect version') }
+                success: (info) => { document.getElementById('connect_info').innerHTML = `Connect Version ${info.version}` },
+                error: () => { document.getElementById('connect_info').innerHTML = 'Cannot get connect version' }
             })
         }
     })
@@ -49,10 +54,6 @@ function app_initialize_connect() {
     return connect_object
 }
 
-function app_updateClientVersion(version) {
-    connectVersion = version
-    app_updateUi()
-}
 
 // @return the provided number with magnitude qualifier
 function app_readableBytes(bytes) {
@@ -66,12 +67,13 @@ function app_readableBytes(bytes) {
 function app_getTransferSpec(params) {
     console.log(`Transfer requested: ${params.operation}`)
     if (!document.getElementById('use_server').checked) {
+        // call directly node api in browser (returns a promise)
         return common.get_transfer_spec_direct(params)
     } else {
         // @return transfer spec with token by calling the local express server
         const server_url = window.location.href
         if (!server_url.startsWith('http://')) {
-            alert('Cannot detect server URL if page is loaded from file')
+            app_error('Cannot detect server URL if page is loaded from file')
             throw 'Cannot detect server URL if page is loaded from file'
         }
         return new Promise((resolve) => {
@@ -99,20 +101,11 @@ function app_startTransfer(transferSpec) {
         //transferSpec.zip_required=true
         if (transferSpec.direction === 'receive') {
             asperaHttpGateway.download(transferSpec).then(response => {
-            }).catch(error => {
-                console.log('Download could not start', error)
-                alert(`Problem with HTTPGW: ${error.message}`)
-            })
+            }).catch(error => { app_error(`Problem with HTTPGW: ${error.message}`) })
         } else {
             asperaHttpGateway.upload(transferSpec, HTTPGW_FORM_ID)
-                .then(response => {
-                    // Indicates upload started: transfer status is shown in activity callbacks
-                    console.log('Upload started', response)
-                }).catch(error => {
-                    // Indicates upload could not start (this is a failure from the SDK or the Gateway Server, not from the transfer server)
-                    console.log('Upload could not start', error)
-                    alert(`Problem with HTTPGW: ${error.message}`)
-                })
+                .then(response => { console.log('Upload started', response) })
+                .catch(error => { app_error(`Problem with HTTPGW: ${error.message}`) })
         }
     }
 }
@@ -139,14 +132,15 @@ function handleTransferEvents(transfers) {
 }
 
 // update dynamic elements in UI
+// initialize selected SDK for transfer: Connect or HTTPGW
 function app_updateUi() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ')
     document.getElementById('node_info').style.display = document.getElementById('use_server').checked ? 'none' : 'block'
-    document.getElementById('connect_info').innerHTML = connectVersion
     if (document.getElementById('use_connect').checked) {
-        // connect
+        // Connect
         document.getElementById('connect_info').style.display = 'block'
         document.getElementById('httpgw_info').style.display = 'none'
+        document.getElementById('httpgw_version').style.display = 'none'
         document.getElementById('server_download').style.display = 'block'
         document.getElementById('server_info').style.display = 'block'
         if (!this.client) {
@@ -155,31 +149,46 @@ function app_updateUi() {
             this.client.addEventListener(AW4.Connect.EVENT.TRANSFER, (eventType, eventInfo) => { handleTransferEvents(eventInfo.transfers) })
         }
     } else {
-        // http gw
-        document.getElementById('httpgw_info').style.display = 'block'
+        // HTTPGW
         document.getElementById('connect_info').style.display = 'none'
+        document.getElementById('httpgw_info').style.display = 'block'
+        document.getElementById('httpgw_version').style.display = 'block'
         document.getElementById('server_download').style.display = 'none'
         document.getElementById('server_info').style.display = 'none'
         if (!httpGwMonitorId) {
-            asperaHttpGateway.initHttpGateway(document.getElementById('httpgw_url').value + '/v1').then(response => {
-                console.log('HTTP Gateway SDK started', response)
-                // register a transfer monitor
-                httpGwMonitorId = asperaHttpGateway.registerActivityCallback((result) => { handleTransferEvents(result.transfers) })
-            }).catch(error => {
-                console.error('HTTP Gateway SDK did not start', error)
-                alert(`Problem with HTTPGW: ${error.message}`)
-            })
+            asperaHttpGateway.initHttpGateway(document.getElementById('httpgw_url').value + '/v1')
+                .then(response => {
+                    console.log('HTTP Gateway SDK started', response)
+                    document.getElementById('httpgw_version').innerHTML = `HTTP GW v${response.version}`
+                    // register a transfer monitor
+                    httpGwMonitorId = asperaHttpGateway.registerActivityCallback((result) => { handleTransferEvents(result.transfers) })
+                })
+                .catch(error => {
+                    document.getElementById('httpgw_version').innerHTML = `HTTP GW ${error.message}`
+                    app_error(`Problem with HTTPGW: ${error.message}`)
+                })
         }
     }
 }
 
+function app_update_node_config_on_change(part) {
+    element = document.getElementById('node_' + part)
+    element.value = config.node[part]
+    element.addEventListener('input', (e) => {
+        config.node[part] = element.value
+        console.log(`Updated node config ${part}`)
+    })
+}
+
 // Called after page full download
 function app_initialize() {
-    // set default values from configuration file
+    // initialize values from config file
+    // node api parameters are also used in "common", so if used on browser: need bidirectional updates
+    app_update_node_config_on_change('url')
+    app_update_node_config_on_change('user')
+    app_update_node_config_on_change('pass')
+    // other parameters are directly read from the element
     document.getElementById('httpgw_url').value = config.httpgw.url
-    document.getElementById('node_url').value = config.node.url
-    document.getElementById('node_user').value = config.node.user
-    document.getElementById('node_pass').value = config.node.pass
     document.getElementById('server_url').value = config.server.url
     document.getElementById('server_user').value = config.server.user
     document.getElementById('server_pass').value = config.server.pass
@@ -194,7 +203,7 @@ function app_initialize() {
 function app_download_ssh_creds() {
     // replace ssh, as browser will not parse ssh as scheme
     const serverUrl = new URL(document.getElementById('server_url').value.replace(/^ssh:/g, 'http://'))
-    // build 
+    // build manually the transfer spec
     const transferSpec = {
         remote_host: serverUrl.hostname,
         ssh_port: serverUrl.port,
@@ -213,7 +222,7 @@ function app_download_with_token(use_basic) {
         .then((transferSpec) => {
             if (use_basic) { transferSpec.token = 'Basic ' + btoa(document.getElementById('node_user').value + ':' + document.getElementById('node_pass').value) }
             app_startTransfer(transferSpec)
-        })
+        }).catch((message) => { app_error(message) })
 }
 
 // callback after files are selected
@@ -244,5 +253,5 @@ function app_upload() {
         .then((transferSpec) => {
             app_startTransfer(transferSpec)
             app_resetSelection()
-        })
+        }).catch((message) => { app_error(message) })
 }

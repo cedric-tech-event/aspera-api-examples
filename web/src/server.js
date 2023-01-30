@@ -1,7 +1,7 @@
 "use strict"
 // sample server application
 // provides one endpoint: /tspec
-// called with two parameters: operation and files
+// called with two parameters: upload/download and file list
 // returns an transfer spec suitable to start a transfer
 
 const bodyParser = require('body-parser')
@@ -11,7 +11,7 @@ const yaml = require('js-yaml')
 const fs = require('fs')
 
 // include common lib
-const common=eval(fs.readFileSync(__dirname+'/common.js') + '')
+const common = eval(fs.readFileSync(__dirname + '/common.js') + '')
 
 // command line arguments
 const configFile = process.argv[2]
@@ -30,15 +30,16 @@ app.use(express.static(staticFolder))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-// for demo, assume self signed cert
+// for demo, ignore self-signed cert on Node API
 const ignoreCertAgent = new https.Agent({ rejectUnauthorized: false })
 
-// get transfer authorization by calling node API
+// expose API: get transfer authorization by calling node API
 app.post('/tspec', (req, res) => {
   common.get_transfer_spec_direct({ operation: req.body.operation, sources: req.body.sources, destination: req.body.destination, agent: ignoreCertAgent })
     .then((transferSpec) => { return res.send(transferSpec) })
 })
 
+// start web server
 app.listen(port, () => {
   console.log(`Express server running at http://localhost:${port}`)
 })
