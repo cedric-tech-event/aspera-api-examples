@@ -1,62 +1,73 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Laurent's Aspera Web Sample</title>
-    <link rel="tab icon" href="static/favicon.ico"/>
-    <link rel="stylesheet" href="static/styles.css"/>
-    <script src="https://d3gcli72yxqn2z.cloudfront.net/@ibm-aspera/connect-sdk-js/latest/connect-sdk.js"></script>
-    <script src="dist/http-gateway.js"></script>
-    <script src="conf.js"></script>
-    <script src="src/common.js"></script>
-    <script src="src/browser_app.js"></script>
-  </head>
-  <body onload="app_initialize();">
-    <header>
-      <div class="content">
-        <nav>
-          <a href="/"><h1>Laurent's Aspera Web Sample App</h1></a>
-          This sample web application allows to test various combination of transfers using Connect or HTTP GW, or Node API based authentication versus SSH based auth.
-        </nav>
-      </div>
-    </header>
-    <section class="content">
-      <table><tr>
-      <td>Transfer Agent<br/><label class="toggle">
-        <input type="checkbox" id="use_connect" checked>
-        <span class="labels" data-on="Connect" data-off="HTTPGW"></span>
-      </label><div id="connect_info"></div></p><p><span id="httpgw_info">URL: <input type="text" id="httpgw_url"></span></td>
-      <td>Node(token transfer)<br/><label class="toggle">
-        <input type="checkbox" id="use_server">
-        <span class="labels" data-on="Web Server" data-off="Direct"></span>
-      </label><span id="node_info">
-      <p>URL: <input type="text" id="node_url"></p>
-      <p>User: <input type="text" id="node_user"></p>
-      <p>Pass: <input type="password" id="node_pass"></p>
-      </span></td>
-      <td><span id="server_info">Server(SSH transfer)<br/>
-        <p>URL: <input type="text" id="server_url"/></p>
-        <p>User: <input type="text" id="server_user"/></p>
-        <p>Pass: <input type="password" id="server_pass"/></p>
+
+<head>
+  <title>Laurent's Aspera Web Sample</title>
+  <link rel="tab icon" href="static/favicon.ico" />
+  <link rel="stylesheet" href="static/styles.css" />
+  <script src="https://d3gcli72yxqn2z.cloudfront.net/@ibm-aspera/connect-sdk-js/latest/connect-sdk.js"></script>
+  <script src="dist/http-gateway.js"></script>
+  <script src="conf.js"></script>
+  <script src="src/common.js"></script>
+  <script src="src/browser_app.js"></script>
+</head>
+
+<body onload="app_initialize();">
+  <header>
+    <div class="content">
+      <nav>
+        <a href="/">
+          <h1>Laurent's Aspera Web Sample App</h1>
+        </a>
+        This sample web application allows to test various combination of transfers using Connect or HTTP GW, or Node
+        API based authentication versus SSH based auth.
+      </nav>
+    </div>
+  </header>
+  <table>
+    <tr>
+      <td>Transfer Agent<br /><label class="toggle">
+          <input type="checkbox" id="use_connect" checked>
+          <span class="labels" data-on="Connect" data-off="HTTPGW"></span>
+        </label>
+        <div id="connect_info"></div>
+        </p>
+        <p><span id="httpgw_info">URL: <input type="text" id="httpgw_url"></span>
+      </td>
+      <td>Node(token transfer)<br /><label class="toggle">
+          <input type="checkbox" id="use_server">
+          <span class="labels" data-on="Web Server" data-off="Direct"></span>
+        </label><span id="node_info">
+          <p>URL: <input type="text" id="node_url"></p>
+          <p>User: <input type="text" id="node_user"></p>
+          <p>Pass: <input type="password" id="node_pass"></p>
         </span></td>
-      </tr></table>
-    </section>
-    <section class="content">
-      <h2>Download</h2>
-      <p>File: <input type="text" id="download_file"></p>
-      <button onclick="app_download_with_token();">With Aspera token</button>
-      <button onclick="app_download_with_token(true);">With Basic token</button>
-      <button onclick="app_download_ssh_creds();" id="server_download">With SSH credentials</button>
-    </section>
-    <section class="content">
-      <h2>Upload</h2>
-      <p>Destination Folder: <input type="text" id="upload_folder"></p>
-      <p>Selected Files: <span id="upload_files"></span></p>
-      <button onclick="app_pick_files();">Select Files</button>
-      <button onclick="app_upload();">Upload Files</button>
-    </section>
-    <section class="content">
-      <h2>Transfer Status</h2>
-      <pre id="status"></p>
-    </section>
+      <td><span id="server_info">Server(SSH transfer)<br />
+          <p>URL: <input type="text" id="server_url" /></p>
+          <p>User: <input type="text" id="server_user" /></p>
+          <p>Pass: <input type="password" id="server_pass" /></p>
+        </span></td>
+    </tr>
+    <tr>
+      <td>
+        <h2>Download</h2>
+        <p>File: <input type="text" id="download_file"></p>
+        <button onclick="app_download_with_token();">With Aspera token</button><br />
+        <button onclick="app_download_with_token(true);">With Basic token</button><br />
+        <button onclick="app_download_ssh_creds();" id="server_download">With SSH credentials</button>
+      </td>
+      <td>
+        <h2>Upload</h2>
+        <p>Destination Folder: <input type="text" id="upload_folder"></p>
+        <button onclick="app_pick_files();">Select Files</button><br />
+        <button onclick="app_upload();">Upload Files</button><br />
+        <p>Selected Files: <span id="upload_files"></span></p>
+      </td>
+      <td>
+        <h2>Transfer Status</h2>
+        <pre id="status"></p>
+      </td>
+    </tr>
+    </table>
   </body>
 </html>

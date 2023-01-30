@@ -6,8 +6,6 @@ var selected_upload_files = [];
 var httpGwMonitorId;
 // Connect Version read from app
 var connectVersion = 'Unknown'
-// connect installer
-//var connect_installer;
 // identifier used by httpgw sdk
 const httpGwFormId = 'send-panel';
 
@@ -53,7 +51,7 @@ function app_readableBytes(bytes) {
     return (bytes / Math.pow(1024, magnitude)).toFixed(2) * 1 + ' ' + sizes[magnitude];
 }
 
-// get transfer spec for specified transfer type and files
+// Generate transfer spec for specified transfer operation (upload/download) and files
 // either call directly the node api, or call the web server who will forward to node
 function app_getTransferSpec(params) {
     console.log(`Transfer requested: ${params.operation}`);
@@ -109,12 +107,13 @@ function app_startTransfer(transferSpec) {
     }
 }
 
-// reset
+// reset file selection for upload to empty file list
 function app_resetSelection() {
     selected_upload_files = [];
     app_updateUi();
 }
 
+// callback for feedback on transfer (Connect or HTTPGW)
 function handleTransferEvents(transfers) {
     transfers.forEach(transfer => {
         const status = `Event:
@@ -126,6 +125,7 @@ function handleTransferEvents(transfers) {
         console.log(status);
         document.getElementById('status').innerHTML = status;
     });
+    app_updateUi();
 }
 
 // update dynamic elements in UI
@@ -163,6 +163,7 @@ function app_updateUi() {
     }
 }
 
+// Called after page full download
 function app_initialize() {
     // set default values from configuration file
     document.getElementById('httpgw_url').value = config.httpgw.url;
@@ -180,6 +181,7 @@ function app_initialize() {
     app_updateUi();
 }
 
+// Button: Download from server with SSH credentials
 function app_download_ssh_creds() {
     // replace ssh, as browser will not parse ssh as scheme
     const serverUrl = new URL(document.getElementById('server_url').value.replace(/^ssh:/g, 'http://'));
@@ -196,6 +198,7 @@ function app_download_ssh_creds() {
     app_startTransfer(transferSpec);
 }
 
+// Button: Download from server with Node API credentials (using Aspera or Basic token)
 function app_download_with_token(use_basic) {
     app_getTransferSpec({ operation: 'download', sources: [document.getElementById('download_file').value] })
         .then((transferSpec) => {
@@ -204,6 +207,7 @@ function app_download_with_token(use_basic) {
         });
 }
 
+// callback after files are selected
 function app_storeFileNames(selection) {
     for (const file of selection.dataTransfer.files) {
         selected_upload_files.push(file.name);
@@ -212,7 +216,7 @@ function app_storeFileNames(selection) {
     app_updateUi();
 }
 
-// called by file select button
+// Button: Select files for upload
 function app_pick_files() {
     // for the sample: a new select deletes already selected files
     app_resetSelection();
@@ -225,7 +229,7 @@ function app_pick_files() {
     }
 }
 
-// called by upload button
+// Button: Upload selected files
 function app_upload(httpGwFormId) {
     app_getTransferSpec({ operation: 'upload', sources: selected_upload_files, destination: document.getElementById('upload_folder').value })
         .then((transferSpec) => {

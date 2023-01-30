@@ -15,7 +15,7 @@ button {
 
 header {
   background-color: #0f62fe;
-  height: 150px;
+  height: 100px;
 }
 
 header a {
@@ -27,7 +27,7 @@ header a {
 header h1 {
   margin: 0;
   width: auto;
-  padding-top: 100px;
+  padding-top: 20px;
 }
 
 a {
@@ -44,14 +44,15 @@ section li {
 }
 
 button {
-  background-color: #0f62fe;
-  border: 1px solid #0000;
   color: white;
+  background-color: #0f62fe;
+  border: 20px solid #0000;
   cursor: pointer;
-  padding-bottom: 11px;
-  padding-left: 15px;
-  padding-right: 63px;
-  padding-top: 11px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  #padding-left: 15px;
+  #padding-right: 3px;
+  width: 200px;
 }
 
 .transfer-btn {
