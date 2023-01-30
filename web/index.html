@@ -12,7 +12,7 @@
   <script src="src/browser_app.js"></script>
 </head>
 
-<body onload="app_initialize();">
+<body onload="app_initialize()">
   <header>
     <div class="content">
       <nav>
@@ -52,15 +52,15 @@
       <td>
         <h2>Download</h2>
         <p>File: <input type="text" id="download_file"></p>
-        <button onclick="app_download_with_token();">With Aspera token</button><br />
-        <button onclick="app_download_with_token(true);">With Basic token</button><br />
-        <button onclick="app_download_ssh_creds();" id="server_download">With SSH credentials</button>
+        <button onclick="app_download_with_token()">With Aspera token</button><br />
+        <button onclick="app_download_with_token(true)">With Basic token</button><br />
+        <button onclick="app_download_ssh_creds()" id="server_download">With SSH credentials</button>
       </td>
       <td>
         <h2>Upload</h2>
         <p>Destination Folder: <input type="text" id="upload_folder"></p>
-        <button onclick="app_pick_files();">Select Files</button><br />
-        <button onclick="app_upload();">Upload Files</button><br />
+        <button onclick="app_pick_files()">Select Files</button><br />
+        <button onclick="app_upload()">Upload Files</button><br />
         <p>Selected Files: <span id="upload_files"></span></p>
       </td>
       <td>
