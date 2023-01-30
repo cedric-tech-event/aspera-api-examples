@@ -10,6 +10,7 @@ var httpGwMonitorId;
 const httpGwFormId = 'send-panel';
 
 // initializes Aspera Connect: check if extension and client are installed, else ask to install
+// See reference: https://ibm.github.io/aspera-connect-sdk-js/
 function app_initialize_connect() {
     var connect_object = new AW4.Connect({
         minVersion: '4.2.0',
