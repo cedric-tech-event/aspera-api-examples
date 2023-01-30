@@ -39,7 +39,7 @@ function app_initialize_connect() {
             connect_installer.connected()
             // (optional) Update UI with Connect version, that also validates that communication works
             connect_object.version({
-                success: (info) => { app_updateClientVersion('Connect Version ' + info.version) },
+                success: (info) => { app_updateClientVersion(`Connect Version ${info.version}`) },
                 error: () => { app_updateClientVersion('Cannot get connect version') }
             })
         }
@@ -58,7 +58,7 @@ function app_updateClientVersion(version) {
 function app_readableBytes(bytes) {
     const magnitude = Math.floor(Math.log(bytes) / Math.log(1024))
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    return (bytes / Math.pow(1024, magnitude)).toFixed(2) * 1 + ' ' + sizes[magnitude]
+    return `${(bytes / Math.pow(1024, magnitude)).toFixed(2) * 1} ${sizes[magnitude]}`
 }
 
 // Generate transfer spec for specified transfer operation (upload/download) and files
@@ -76,7 +76,7 @@ function app_getTransferSpec(params) {
         }
         return new Promise((resolve) => {
             // get transfer spec from server
-            fetch(server_url + 'tspec', {
+            fetch(`${server_url}tspec`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(params)
@@ -111,7 +111,7 @@ function app_startTransfer(transferSpec) {
                 }).catch(error => {
                     // Indicates upload could not start (this is a failure from the SDK or the Gateway Server, not from the transfer server)
                     console.log('Upload could not start', error)
-                    alert('Problem with HTTPGW:' + error.message)
+                    alert(`Problem with HTTPGW: ${error.message}`)
                 })
         }
     }
@@ -167,7 +167,7 @@ function app_updateUi() {
                 httpGwMonitorId = asperaHttpGateway.registerActivityCallback((result) => { handleTransferEvents(result.transfers) })
             }).catch(error => {
                 console.error('HTTP Gateway SDK did not start', error)
-                alert('Problem with HTTPGW:' + error.message)
+                alert(`Problem with HTTPGW: ${error.message}`)
             })
         }
     }
@@ -185,7 +185,6 @@ function app_initialize() {
     document.getElementById('server_pass').value = config.server.pass
     document.getElementById('download_file').value = config.server.download_file
     document.getElementById('upload_folder').value = config.server.upload_folder
-
     document.getElementById('use_connect').addEventListener('click', () => { app_updateUi() })
     document.getElementById('use_server').addEventListener('click', () => { app_updateUi() })
     app_updateUi()
