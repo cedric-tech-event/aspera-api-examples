@@ -139,3 +139,7 @@ button {
   transform: rotateY(180deg) scale(-1, 1);
   opacity: 1;
 }
+
+td {
+  vertical-align: top;
+}

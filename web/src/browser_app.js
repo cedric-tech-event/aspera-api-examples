@@ -4,6 +4,8 @@
 var selected_upload_files = [];
 // upload monitor
 var httpGwMonitorId;
+// Connect Version read from app
+var connectVersion = 'Unknown'
 // connect installer
 //var connect_installer;
 // identifier used by httpgw sdk
@@ -33,8 +35,8 @@ function app_initialize_connect() {
             connect_installer.connected();
             // Make sure we can use Connect API after we're told it's running.
             connect_object.version({
-                success: function (version) { console.log('version returned:', version); },
-                error: function () { console.log('version error'); }
+                success: function (info) { connectVersion = 'Connect Version '+info.version; app_updateUi(); },
+                error: function () { connectVersion = 'Cannot get connect version'; app_updateUi(); }
             });
         } else if (data == AW4.Connect.STATUS.EXTENSION_INSTALL) {
             connect_installer.showExtensionInstall();
@@ -130,8 +132,10 @@ function handleTransferEvents(transfers) {
 function app_updateUi() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ');
     document.getElementById('node_info').style.display = document.getElementById('use_server').checked ? 'none' : 'block';
+    document.getElementById('connect_info').innerHTML = connectVersion;
     if (document.getElementById('use_connect').checked) {
         // connect
+        document.getElementById('connect_info').style.display = 'block';
         document.getElementById('httpgw_info').style.display = 'none';
         document.getElementById('server_download').style.display = 'block';
         document.getElementById('server_info').style.display = 'block';
@@ -143,6 +147,7 @@ function app_updateUi() {
     } else {
         // http gw
         document.getElementById('httpgw_info').style.display = 'block';
+        document.getElementById('connect_info').style.display = 'none';
         document.getElementById('server_download').style.display = 'none';
         document.getElementById('server_info').style.display = 'none';
         if (!httpGwMonitorId) {

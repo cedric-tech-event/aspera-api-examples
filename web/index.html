@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>IBM Aspera Web Samples</title>
+    <title>Laurent's Aspera Web Sample</title>
     <link rel="tab icon" href="static/favicon.ico"/>
     <link rel="stylesheet" href="static/styles.css"/>
     <script src="https://d3gcli72yxqn2z.cloudfront.net/@ibm-aspera/connect-sdk-js/latest/connect-sdk.js"></script>
@@ -14,30 +14,31 @@
     <header>
       <div class="content">
         <nav>
-          <a href="/">
-            <h1>IBM Aspera Web Samples</h1>
-          </a>
+          <a href="/"><h1>Laurent's Aspera Web Sample App</h1></a>
+          This sample web application allows to test various combination of transfers using Connect or HTTP GW, or Node API based authentication versus SSH based auth.
         </nav>
       </div>
     </header>
     <section class="content">
-      <p>Transfer Agent: <label class="toggle">
+      <table><tr>
+      <td>Transfer Agent<br/><label class="toggle">
         <input type="checkbox" id="use_connect" checked>
         <span class="labels" data-on="Connect" data-off="HTTPGW"></span>
-      </label></p><p><span id="httpgw_info">URL: <input type="text" id="httpgw_url"></span></p>
-      <p>Node(token): <label class="toggle">
+      </label><div id="connect_info"></div></p><p><span id="httpgw_info">URL: <input type="text" id="httpgw_url"></span></td>
+      <td>Node(token transfer)<br/><label class="toggle">
         <input type="checkbox" id="use_server">
         <span class="labels" data-on="Web Server" data-off="Direct"></span>
-      </label></p><span id="node_info">
+      </label><span id="node_info">
       <p>URL: <input type="text" id="node_url"></p>
       <p>User: <input type="text" id="node_user"></p>
       <p>Pass: <input type="password" id="node_pass"></p>
-      </span>
-      <span id="server_info">Server(SSH): 
+      </span></td>
+      <td><span id="server_info">Server(SSH transfer)<br/>
         <p>URL: <input type="text" id="server_url"/></p>
         <p>User: <input type="text" id="server_user"/></p>
         <p>Pass: <input type="password" id="server_pass"/></p>
-        </span>
+        </span></td>
+      </tr></table>
     </section>
     <section class="content">
       <h2>Download</h2>
