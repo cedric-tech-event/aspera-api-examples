@@ -29,6 +29,8 @@ function app_initialize_connect() {
         console.log(`Connect Event: ${eventInfo}`)
         if (eventInfo == AW4.Connect.STATUS.INITIALIZING) {
             connect_installer.showLaunching()
+        } else if (eventInfo == AW4.Connect.STATUS.EXTENSION_INSTALL) {
+            connect_installer.showExtensionInstall()
         } else if (eventInfo == AW4.Connect.STATUS.FAILED) {
             connect_installer.showDownload()
         } else if (eventInfo == AW4.Connect.STATUS.OUTDATED) {
@@ -40,8 +42,6 @@ function app_initialize_connect() {
                 success: (info) => { app_updateClientVersion('Connect Version ' + info.version) },
                 error: () => { app_updateClientVersion('Cannot get connect version') }
             })
-        } else if (eventInfo == AW4.Connect.STATUS.EXTENSION_INSTALL) {
-            connect_installer.showExtensionInstall()
         }
     })
     // try to start connect, else trigger installer
