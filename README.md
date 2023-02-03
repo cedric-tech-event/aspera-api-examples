@@ -8,6 +8,8 @@ See [Aspera transfer SDK on IBM site](https://developer.ibm.com/apis/catalog?sea
 
 Code examples are provided as part of the SDK itself.
 
+[Video about Transfer SDK](https://higherlogicstream.s3.amazonaws.com/IMWUC/d5b91301-6aa1-5741-e083-2a9121d9d8a7_file.mp4)
+
 ## Quick start
 
 1. [Create the configuration file config.yaml and fill with valid server addresses and credentials](#config)

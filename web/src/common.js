@@ -26,7 +26,6 @@ var common = {
                 agent: params.agent
             }).then((response) => {
                 if (!response.ok) {
-                    console.log(response)
                     return callback_reject(`Node API: ${response.statusText}`)
                 }
                 return response.json()
@@ -41,7 +40,7 @@ var common = {
                 transferSpec.paths = source_paths
                 // add auth for HTTPGW or connect to use Aspera SSH keys
                 transferSpec.authentication = 'token'
-                console.log(transferSpec)
+                console.log('result ts:',transferSpec)
                 // call resolve callback with resulting transfer spec
                 return callback_resolve(transferSpec)
             })

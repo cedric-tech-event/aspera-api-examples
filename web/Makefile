@@ -16,5 +16,6 @@ clean:
 	rm -f package-lock.json conf.js
 	rm -f aspera-httpgw-example.zip
 	rm -fr dist node_modules
+	-killall asperatransferd
 zip:
 	zip aspera-httpgw-example.zip $$(git ls-files)
