@@ -28,8 +28,8 @@ public class TestEnvironment {
 	}
 
 	public TestEnvironment() {
-		final String config_filepath = getProp("config_yaml");
 		try {
+			final String config_filepath = getProp("config_yaml");
 			config = new Yaml().load(new java.io.FileReader(config_filepath));
 		} catch (final java.io.FileNotFoundException e) {
 			throw new Error(e.getMessage());
@@ -55,10 +55,10 @@ public class TestEnvironment {
 				System.out.println("KO: Daemon is not here.");
 				try {
 					final String daemon_filepath = getProp("daemon");
-					final String daconf_filepath = getProp("config_daemon");
-					System.out.println("Starting daemon ..." + daemon_filepath + " " + daconf_filepath);
+					final String sdk_conf_path = getProp("config_daemon");
+					System.out.println("Starting daemon: " + daemon_filepath + " -c " + sdk_conf_path);
 					Runtime.getRuntime().exec(new String[] {
-						daemon_filepath, "-c", daconf_filepath
+						daemon_filepath, "-c", sdk_conf_path
 					});
 					Thread.sleep(5000);
 				} catch (final IOException e2) {
@@ -88,24 +88,30 @@ public class TestEnvironment {
 	}
 
 	public void wait_transfer() {
-		System.out.println("Getting session events");
-		final Iterator<Transfer.TransferResponse > monitorTransferResponse = client.monitorTransfers(
+		System.out.println("L: Getting session events");
+		final Iterator<Transfer.TransferResponse> monitorTransferResponse = client.monitorTransfers(
 			Transfer.RegistrationRequest.newBuilder()
 			.addFilters(Transfer.RegistrationFilter.newBuilder().setOperator(Transfer.RegistrationFilterOperator.OR).addTransferId(transferId).build()).build());
 
 		// monitor transfer until it finishes
-		for (Transfer.TransferResponse info = monitorTransferResponse.next(); monitorTransferResponse.hasNext(); info = monitorTransferResponse.next()) {
-			//System.out.println("transfer info " + info);
-			System.out.println("file info " + info.getFileInfo());
-			System.out.println("transfer event " + info.getTransferEvent());
+		while (monitorTransferResponse.hasNext()) {
+			final Transfer.TransferResponse response = monitorTransferResponse.next();
+			// status is enum
+			final Transfer.TransferStatus status = response.getStatus();
+			System.out.println("L: transfer event: " + response.getTransferEvent());
+			System.out.println("L: file info: " + response.getFileInfo());
+			System.out.println("L: status: " + status.toString());
+			System.out.println("L: message: " + response.getMessage());
+			System.out.println("L: err: " + response.getError());
 
-			if (info.getStatus() == Transfer.TransferStatus.FAILED ||
-				info.getStatus() == Transfer.TransferStatus.COMPLETED) {
-				//|| info.getTransferEvent() == Transfer.TransferEvent.FILE_STOP) {
-				System.out.println("upload finished " + info.getStatus().toString());
+			if (status == Transfer.TransferStatus.FAILED ||
+				status == Transfer.TransferStatus.COMPLETED) {
+				//|| response.getTransferEvent() == Transfer.TransferEvent.FILE_STOP) {
+				System.out.println("L: upload finished " + status.toString());
 				break;
 			}
 		}
+		System.out.println("L: Finished monitoring loop");
 	}
 
 	public void start_transfer_and_wait(final String transferSpec) {

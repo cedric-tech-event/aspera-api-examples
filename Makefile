@@ -39,9 +39,20 @@ startdaemon: $(CONFIG_TRSDK_CONFIG)
 	$(CONFIG_TRSDK_DIR_ARCH)/asperatransferd -c $(CONFIG_TRSDK_CONFIG)
 stopdaemon:
 	-killall asperatransferd
-# generate transfer SDK config file
-$(CONFIG_TRSDK_CONFIG): config.yaml
-	echo '{address: "'$$(sed -n 's|.*trsdk_url.*//\([^:]*\):.*|\1|p' < config.yaml)'",port: '$$(sed -n 's|.*trsdk_url.*:\([0-9]*\).*|\1|p' < config.yaml)',fasp_runtime: {use_embedded: false, user_defined: {bin: "'$(CONFIG_TRSDK_DIR_ARCH)'",etc: "'$(CONFIG_TRSDK_DIR_GENERIC)'"}}}' > $@
+# generate transfer SDK config file, need utility `jq`
+# see https://developer.ibm.com/apis/catalog/aspera--aspera-transfer-sdk/Configuration%20File
+$(CONFIG_TRSDK_CONFIG): config.yaml sdkconf.tmpl
+	jq \
+'.address = "'$$(sed -n 's|.*trsdk_url.*//\([^:]*\):.*|\1|p' < config.yaml)'"'\
+' | .port = '$$(sed -n 's|.*trsdk_url.*:\([0-9]*\).*|\1|p' < config.yaml)''\
+' | .fasp_runtime.user_defined.bin = "'$(CONFIG_TRSDK_DIR_ARCH)'"'\
+' | .fasp_runtime.user_defined.etc = "'$(CONFIG_TRSDK_DIR_GENERIC)'"'\
+' | .fasp_runtime.log.dir = "'$(CONFIG_TMPDIR)'"'\
+' | .fasp_runtime.log.level = 0'\
+' | .log_directory = "'$(CONFIG_TMPDIR)'"'\
+' | .log_level = "debug"'\
+' | del(.api_time_settings, .tls, .workers, .authentication, .fasp_management, .fasp_runtime.force_version, .fasp_runtime.extra_config)'\
+ sdkconf.tmpl > $@
 # unlocked bypass key
 $(CONFIG_SDK_ROOT)/aspera_ssh_bypass_rsa.pem: $(CONFIG_TRSDK_DIR_ARCH)/asperatransferd
 	openssl rsa -passin pass:$(UUID) -in $(CONFIG_TRSDK_DIR_GENERIC)/aspera_tokenauth_id_rsa -out $(CONFIG_SDK_ROOT)/aspera_ssh_bypass_rsa.pem

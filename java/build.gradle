@@ -1,8 +1,9 @@
 plugins {
+    id 'groovy'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.0'
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
-    id 'com.google.protobuf' version '0.8.15'
+    id 'com.google.protobuf' version '0.9.2'
     id 'idea' // use the idea plugin if using Jetbrains IntelliJ
 }
 
@@ -11,7 +12,15 @@ version = '0.1'
 
 def grpcVersion = '1.43.2'
 
-mainClassName = 'COSFileUploadExample'
+application {
+  mainClass = 'COSFileUploadExample'
+}
+
+jar {
+  manifest {
+    attributes 'Main-Class': application.mainClass
+  }
+}
 
 repositories {
     mavenCentral()
@@ -41,16 +50,17 @@ sourceSets {
     }
 }
 
+// build jar with -all ext withh all dependincies in it
 shadowJar {
     project.configurations.implementation.canBeResolved = true
     configurations = [project.configurations.implementation]
 }
 
 dependencies {
+    compileOnly    'org.apache.tomcat:annotations-api:6.0.53'
     implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
     implementation 'org.json:json:20211205'
     implementation 'org.yaml:snakeyaml:1.30'
-    compileOnly    'org.apache.tomcat:annotations-api:6.0.53'
 }

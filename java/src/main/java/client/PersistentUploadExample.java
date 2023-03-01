@@ -18,11 +18,14 @@ public class PersistentUploadExample {
 		private int seq;
 		private final TestEnvironment mTestEnv;
 		private final int mMax;
+		private final boolean mUseRealFile;
 
 		FileUploadTask(final TestEnvironment aTestEnv, int aMax) {
 			seq = 0;
 			mTestEnv = aTestEnv;
             mMax=aMax;
+			// only real files are supported in persistent session
+			mUseRealFile = true;
 		}
 
 		// this is the recurring task
@@ -32,17 +35,23 @@ public class PersistentUploadExample {
 				System.out.println(String.format("T: Task %d scheduled ...executing now", seq));
 				// generate example file to transfer
 				final String fileName = String.format("file%03d", seq);
-				final File file = new File(fileName);
-				final FileWriter writer = new FileWriter(file);
-				writer.write(String.format("Hello World %d!", seq));
+				String filePath = null;
+				if (mUseRealFile) {
+					final File file = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
+					final FileWriter writer = new FileWriter(file);
+					writer.write(String.format("Hello World %d!", seq));
+					writer.close();
+					filePath = file.getAbsolutePath();
+				} else {
+					filePath = String.format("faux:///file%03d?1k", seq);
+				}
 				++seq;
-				writer.close();
 				// add paths of files to transfer to persistent session
 				final Transfer.TransferPathRequest transferPathRequest =
 					Transfer.TransferPathRequest.newBuilder()
 					.setTransferId(mTestEnv.transferId)
 					.addTransferPath(Transfer.TransferPath.newBuilder()
-						.setSource(file.getAbsolutePath())
+						.setSource(filePath)
 						.setDestination(fileName)
 						.build())
 					.build();
@@ -62,12 +71,12 @@ public class PersistentUploadExample {
 		final TestEnvironment test_environment = new TestEnvironment();
 		// get test server address and credentials from configuration file
 		final Map<String, String> server_conf = (Map<String, String> ) test_environment.config.get("server");
-		final URI fasp_url = new URI(server_conf.get("url"));
+		final URI server_ssh_url = new URI(server_conf.get("url"));
 		// transfer spec version 1 (JSON)
 		final JSONObject transferSpec = new JSONObject()
 			.put("title", "server upload V1")
-			.put("remote_host", fasp_url.getHost())
-			.put("ssh_port", fasp_url.getPort())
+			.put("remote_host", server_ssh_url.getHost())
+			.put("ssh_port", server_ssh_url.getPort())
 			.put("remote_user", server_conf.get("user"))
 			.put("remote_password", server_conf.get("pass"))
 			.put("direction", "send")
@@ -77,7 +86,7 @@ public class PersistentUploadExample {
 
 		final TimerTask timerTask = new FileUploadTask(test_environment,max_files);
 		final Timer timer = new Timer(true);
-		timer.scheduleAtFixedRate(timerTask, 3000, 2000); // 1.task 2.delay(ms) 3.period(ms)
+		timer.scheduleAtFixedRate(timerTask, 3000, 1000); // 1.task 2.delay(ms) 3.period(ms)
 
 		test_environment.wait_transfer();
 

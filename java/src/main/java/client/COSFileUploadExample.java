@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 import java.util.Map;
 
-// Send one file to COS using transferspecv2
+// Send one file to COS using transfer spec v2
 public class COSFileUploadExample {
 	public static void main(String... args) {
 		// get simplified testing environment
