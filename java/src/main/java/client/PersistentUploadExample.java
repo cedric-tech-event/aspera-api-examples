@@ -65,6 +65,14 @@ public class PersistentUploadExample {
 				// this will add to the transfer queue
 				mTestEnv.client.addTransferPaths(transferPathRequest);
 				System.out.println("T: end task");
+				if (mSequenceIndex == mMax) {
+					// end the persistent session
+					System.out.println("T: Limit reached, locking session. !!!");
+					mTestEnv.client.lockPersistentTransfer(Transfer.LockPersistentTransferRequest
+					.newBuilder()
+					.setTransferId(mTestEnv.transferId)
+					.build());
+				}
 			} catch (final IOException e) {
 				System.out.println("T: ERROR: " + e.getMessage());
 			}
@@ -92,14 +100,9 @@ public class PersistentUploadExample {
 		final TimerTask timerTask = new FileUploadTask(test_environment, max_files);
 		final Timer timer = new Timer(true);
 		timer.scheduleAtFixedRate(timerTask, 3000, 1000); // 1.task 2.delay(ms) 3.period(ms)
+		// This loops in getting statuses
 		test_environment.wait_transfer();
 
-		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!lock persistent transfer");
-		// end the persistent session
-		test_environment.client.lockPersistentTransfer(Transfer.LockPersistentTransferRequest
-			.newBuilder()
-			.setTransferId(test_environment.transferId)
-			.build());
-
+		System.out.println("L: exiting program");
 	}
 }

@@ -107,7 +107,7 @@ public class TestEnvironment {
 			if (status == Transfer.TransferStatus.FAILED ||
 				status == Transfer.TransferStatus.COMPLETED) {
 				//|| response.getTransferEvent() == Transfer.TransferEvent.FILE_STOP) {
-				System.out.println("L: upload finished " + status.toString());
+				System.out.println("L: upload finished, received: " + status.toString());
 				break;
 			}
 		}
