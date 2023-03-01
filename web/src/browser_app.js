@@ -50,7 +50,8 @@ function app_initialize_connect() {
         }
     })
     // try to start connect, else trigger installer
-    connect_object.initSession()
+    var my_info = connect_object.initSession()
+    console.log('app info=', my_info)
     return connect_object
 }
 
@@ -136,6 +137,10 @@ function handleTransferEvents(transfers) {
 function app_updateUi() {
     document.getElementById('upload_files').innerHTML = selected_upload_files.join(', ')
     document.getElementById('node_info').style.display = document.getElementById('use_server').checked ? 'none' : 'block'
+    if (document.getElementById('use_connect').checked && document.location.protocol === 'file:') {
+        alert(`ERROR: Cannot use the connect SDK with page loaded as file: use the npm server provided.`)
+        document.getElementById('use_connect').checked = false
+    }
     if (document.getElementById('use_connect').checked) {
         // Connect
         document.getElementById('connect_info').style.display = 'block'
