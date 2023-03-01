@@ -12,10 +12,9 @@ JAVA_PROPS=\
 -Ddaemon=$(CONFIG_TRSDK_DIR_ARCH)/asperatransferd \
 -Dconfig_daemon=$(CONFIG_TRSDK_CONFIG) \
 -Dconfig_yaml=$(CONFIG_YAML)
-GRADLE_PROPS=-Pconfig_proto_dir=$(shell dirname $(CONFIG_TRSDK_PROTO))
 .PHONY: $(JARFILE)
 $(JARFILE):
-	gradle build $(GRADLE_PROPS)
+	gradle build
 
 all:: $(JARFILE)
 

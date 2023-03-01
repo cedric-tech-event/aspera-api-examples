@@ -12,18 +12,23 @@ import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 public class PersistentUploadExample {
 
 	public static class FileUploadTask extends TimerTask {
-		private int seq;
+
+		private int mSequenceIndex;
+
 		private final TestEnvironment mTestEnv;
+
 		private final int mMax;
+
 		private final boolean mUseRealFile;
 
 		FileUploadTask(final TestEnvironment aTestEnv, int aMax) {
-			seq = 0;
+			mSequenceIndex = 0;
 			mTestEnv = aTestEnv;
-            mMax=aMax;
+			mMax = aMax;
 			// only real files are supported in persistent session
 			mUseRealFile = true;
 		}
@@ -32,20 +37,21 @@ public class PersistentUploadExample {
 		public void run() {
 			try {
 				System.out.println("T: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-				System.out.println(String.format("T: Task %d scheduled ...executing now", seq));
+				System.out.println(String.format("T: Task %d scheduled ...executing now", mSequenceIndex));
 				// generate example file to transfer
-				final String fileName = String.format("file%03d", seq);
+				final String fileName = String.format("file%03d", mSequenceIndex);
 				String filePath = null;
+
 				if (mUseRealFile) {
-					final File file = new File(System.getProperty("java.io.tmpdir")+"/"+fileName);
+					final File file = new File(System.getProperty("java.io.tmpdir") + "/" + fileName);
 					final FileWriter writer = new FileWriter(file);
-					writer.write(String.format("Hello World %d!", seq));
+					writer.write(String.format("Hello World %d!", mSequenceIndex));
 					writer.close();
 					filePath = file.getAbsolutePath();
 				} else {
-					filePath = String.format("faux:///file%03d?1k", seq);
+					filePath = String.format("faux:///file%03d?1k", mSequenceIndex);
 				}
-				++seq;
+				++mSequenceIndex;
 				// add paths of files to transfer to persistent session
 				final Transfer.TransferPathRequest transferPathRequest =
 					Transfer.TransferPathRequest.newBuilder()
@@ -64,7 +70,6 @@ public class PersistentUploadExample {
 			}
 		}
 	} // FileUploadTask
-
 	public static void main(String...args) throws IOException, java.net.URISyntaxException {
 		final int max_files = 10;
 		// get simplified testing environment, ensures that transfer daemon is started
@@ -84,10 +89,9 @@ public class PersistentUploadExample {
 		// start persistent transfer session
 		test_environment.start_transfer(transferSpec.toString(), Transfer.TransferType.FILE_PERSISTENT);
 
-		final TimerTask timerTask = new FileUploadTask(test_environment,max_files);
+		final TimerTask timerTask = new FileUploadTask(test_environment, max_files);
 		final Timer timer = new Timer(true);
 		timer.scheduleAtFixedRate(timerTask, 3000, 1000); // 1.task 2.delay(ms) 3.period(ms)
-
 		test_environment.wait_transfer();
 
 		System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!lock persistent transfer");
