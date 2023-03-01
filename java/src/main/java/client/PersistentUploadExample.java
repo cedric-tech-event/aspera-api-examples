@@ -79,7 +79,8 @@ public class PersistentUploadExample {
 		}
 	} // FileUploadTask
 	public static void main(String...args) throws IOException, java.net.URISyntaxException {
-		final int max_files = 10;
+		final int max_files = 100;
+		final int ms_between_files = 100;
 		// get simplified testing environment, ensures that transfer daemon is started
 		final TestEnvironment test_environment = new TestEnvironment();
 		// get test server address and credentials from configuration file
@@ -99,7 +100,7 @@ public class PersistentUploadExample {
 
 		final TimerTask timerTask = new FileUploadTask(test_environment, max_files);
 		final Timer timer = new Timer(true);
-		timer.scheduleAtFixedRate(timerTask, 3000, 1000); // 1.task 2.delay(ms) 3.period(ms)
+		timer.scheduleAtFixedRate(timerTask, 1000, ms_between_files); // 1.task 2.delay(ms) 3.period(ms)
 		// This loops in getting statuses
 		test_environment.wait_transfer();
 
